@@ -10,9 +10,22 @@
 		04CD26DD2DD3318C001DD4A9 /* Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		040526E52DDF5290007D80E1 /* Exceptions for "Tracker" folder in "Tracker" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 04CD26DC2DD3318C001DD4A9 /* Tracker */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		04CD26DF2DD3318C001DD4A9 /* Tracker */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				040526E52DDF5290007D80E1 /* Exceptions for "Tracker" folder in "Tracker" target */,
+			);
 			path = Tracker;
 			sourceTree = "<group>";
 		};
