@@ -28,8 +28,7 @@ final class TrackerStyleCollectionServices: NSObject {
         paramsStyleCell: GeometricParams,
         collection: UICollectionView,
         cellDelegate: TrackerStyleCellDelegate
-    )
-    {
+    ) {
         self.paramsStyleCell = paramsStyleCell
         self.collection = collection
         self.cellDelegate = cellDelegate
@@ -50,11 +49,11 @@ final class TrackerStyleCollectionServices: NSObject {
         
         collection.delegate = self
         collection.dataSource = self
-        collection.allowsMultipleSelection = true
+        collection.allowsMultipleSelection = false // Изменено на false для одиночного выбора
         collection.reloadData()
     }
     
-    private func registrationElements(){
+    private func registrationElements() {
         guard let collection = collection else { return }
         collection.register(TrackerStyleCell.self, forCellWithReuseIdentifier: TrackerStyleCell.identifier)
         collection.register(HeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
@@ -71,7 +70,6 @@ final class TrackerStyleCollectionServices: NSObject {
 
 //MARK: - UICollectionViewDelegateFlowLayout
 extension TrackerStyleCollectionServices: UICollectionViewDelegateFlowLayout {
-    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout,
                         insetForSectionAt section: Int) -> UIEdgeInsets {
         UIEdgeInsets(top: paramsStyleCell.topInset, left: paramsStyleCell.leftInset,
@@ -100,12 +98,11 @@ extension TrackerStyleCollectionServices: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
         let toDeselect = collectionView.indexPathsForSelectedItems?
             .filter { $0.section == indexPath.section && $0 != indexPath } ?? []
-        toDeselect.forEach{collectionView.deselectItem(at: $0, animated: false)}
+        toDeselect.forEach { collectionView.deselectItem(at: $0, animated: false) }
         
-        let item  = sections[indexPath.section].items[indexPath.item]
+        let item = sections[indexPath.section].items[indexPath.item]
         switch item {
             case .emoji(let emoji):
                 selectedEmoji = emoji
@@ -114,12 +111,10 @@ extension TrackerStyleCollectionServices: UICollectionViewDelegateFlowLayout {
         }
         
         if let emoji = selectedEmoji, let color = selectedColor {
-            cellDelegate?.trackerStyleCollectionServices(self,
-                                                         didSelectEmoji: emoji,
-                                                         andColor: color)
+            cellDelegate?.trackerStyleCollectionServices(self, didSelectEmoji: emoji, andColor: color)
         }
     }
-    // повторный тап по ячейке
+    
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         let cell = collectionView.cellForItem(at: indexPath) as? TrackerStyleCell
         cell?.backgroundColor = .clear
@@ -128,7 +123,6 @@ extension TrackerStyleCollectionServices: UICollectionViewDelegateFlowLayout {
 
 //MARK: - UICollectionViewDataSource
 extension TrackerStyleCollectionServices: UICollectionViewDataSource {
-    
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         sections.count
     }
@@ -138,12 +132,10 @@ extension TrackerStyleCollectionServices: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        _ = sections[indexPath.section]
         let styleItem = sections[indexPath.section].items[indexPath.item]
         
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TrackerStyleCell.identifier,
-                                                            for: indexPath)
-                as? TrackerStyleCell else { return UICollectionViewCell()}
+                                                            for: indexPath) as? TrackerStyleCell else { return UICollectionViewCell() }
         
         switch styleItem {
             case .emoji(let emoji):
@@ -154,15 +146,14 @@ extension TrackerStyleCollectionServices: UICollectionViewDataSource {
         return cell
     }
     
-    func collectionView(_ collectionView: UICollectionView,viewForSupplementaryElementOfKind kind: String,
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String,
                         at indexPath: IndexPath) -> UICollectionReusableView {
         guard let header = collectionView.dequeueReusableSupplementaryView(
             ofKind: kind,
             withReuseIdentifier: HeaderView.identifier,
             for: indexPath
-        ) as? HeaderView else {
-            return UICollectionReusableView()
-        }
+        ) as? HeaderView else { return UICollectionReusableView() }
+        
         header.setupTitleHeader(title: sections[indexPath.section].title)
         return header
     }

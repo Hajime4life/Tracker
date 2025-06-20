@@ -83,6 +83,7 @@ final class NewTrackerViewController: DefaultController {
         layout.estimatedItemSize = .zero
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.backgroundColor = .lightGray
         return collectionView
     }()
     
@@ -109,45 +110,31 @@ final class NewTrackerViewController: DefaultController {
         if mode == .habit {
             view.setSubviews([inputTextField, buttonStackView, bottomButtonsStackView, styleCollectionView])
             [inputTextField, buttonStackView, bottomButtonsStackView].hideMask()
-            
-            NSLayoutConstraint.activate([
-                inputTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-                inputTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-                inputTextField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
-                
-                buttonStackView.topAnchor.constraint(equalTo: inputTextField.bottomAnchor, constant: 24),
-                buttonStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-                buttonStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-                
-                bottomButtonsStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
-                bottomButtonsStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
-                bottomButtonsStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-                
-                styleCollectionView.topAnchor.constraint(equalTo: buttonStackView.bottomAnchor, constant: 16),
-                styleCollectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-                styleCollectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-                styleCollectionView.bottomAnchor.constraint(equalTo: bottomButtonsStackView.topAnchor, constant: -16)
-            ])
         } else {
             view.setSubviews([topButtonsStackView, bottomButtonsStackView, styleCollectionView])
             [topButtonsStackView, bottomButtonsStackView].hideMask()
-            
-            NSLayoutConstraint.activate([
-                topButtonsStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
-                topButtonsStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-                topButtonsStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-                
-                bottomButtonsStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
-                bottomButtonsStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
-                bottomButtonsStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-                
-                styleCollectionView.topAnchor.constraint(equalTo: topButtonsStackView.bottomAnchor, constant: 16),
-                styleCollectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-                styleCollectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-                styleCollectionView.bottomAnchor.constraint(equalTo: bottomButtonsStackView.topAnchor, constant: -16)
-            ])
         }
         
+        NSLayoutConstraint.activate([
+            (mode == .habit ? inputTextField : topButtonsStackView).topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
+            (mode == .habit ? inputTextField : topButtonsStackView).leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            (mode == .habit ? inputTextField : topButtonsStackView).trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            
+            (mode == .habit ? buttonStackView : topButtonsStackView).topAnchor.constraint(equalTo: (mode == .habit ? inputTextField : topButtonsStackView).bottomAnchor, constant: 24),
+            (mode == .habit ? buttonStackView : topButtonsStackView).leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            (mode == .habit ? buttonStackView : topButtonsStackView).trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            
+            bottomButtonsStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            bottomButtonsStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
+            bottomButtonsStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            
+            styleCollectionView.topAnchor.constraint(equalTo: (mode == .habit ? buttonStackView : topButtonsStackView).bottomAnchor, constant: 16),
+            styleCollectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            styleCollectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            styleCollectionView.bottomAnchor.constraint(equalTo: bottomButtonsStackView.topAnchor, constant: -16)
+        ])
+        
+        styleCollectionView.isHidden = false
         setCenteredInlineTitle(title: mode.title)
     }
     
@@ -174,9 +161,8 @@ final class NewTrackerViewController: DefaultController {
     }
     
     private func makeAndSaveTracker(name: String, category: String, days: Set<WeekViewModel>) {
-        guard let emoji = selectedEmoji,
-              let color = selectedColor
-        else { return }
+        let emoji = selectedEmoji ?? DefaultController.Emojies.allCases.first!
+        let color = selectedColor ?? .gray
         
         let tracker = Tracker(
             nameTrackers: name,
@@ -238,8 +224,8 @@ enum TrackerCreateType {
     
     var title: DefaultController.NavigationTitles {
         switch self {
-            case .habit:  return .newHabit
-            case .event:  return .newEvents
+            case .habit: return .newHabit
+            case .event: return .newEvents
         }
     }
 }
