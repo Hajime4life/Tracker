@@ -14,6 +14,7 @@
 		040526E52DDF5290007D80E1 /* Exceptions for "Tracker" folder in "Tracker" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Controllers/Calendar/CalendarViewController.swift,
 				Info.plist,
 			);
 			target = 04CD26DC2DD3318C001DD4A9 /* Tracker */;

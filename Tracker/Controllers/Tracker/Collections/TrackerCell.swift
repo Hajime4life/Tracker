@@ -1,6 +1,7 @@
 import UIKit
 
 final class TrackerCell: UICollectionViewCell {
+    
     // MARK: - Props
     private enum Constants {
         static let contentCornerRadius: CGFloat = 16
