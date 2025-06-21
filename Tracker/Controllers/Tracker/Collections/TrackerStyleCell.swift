@@ -61,15 +61,17 @@ final class TrackerStyleCell: UICollectionViewCell {
     override var isSelected: Bool {
         didSet {
             switch kind {
-                case .emoji:
-                    contentView.backgroundColor = isSelected ? .ypSwitch : . clear
-                    setStyleSelectedCell()
-                case .color:
-                    contentView.layer.borderWidth = isSelected ? 3 : 0
-                    contentView.layer.borderColor = isSelected ? colorsView.backgroundColor?.cgColor : UIColor.clear.cgColor
-                    setStyleSelectedCell()
-                case .none:
-                    break
+            case .emoji:
+                contentView.backgroundColor = isSelected ? .ypSwitch : .clear
+                setStyleSelectedCell()
+            case .color:
+                contentView.layer.borderWidth = isSelected ? 3 : 0
+                contentView.layer.borderColor = isSelected
+                    ? colorsView.backgroundColor?.withAlphaComponent(0.3).cgColor
+                    : UIColor.clear.cgColor
+                setStyleSelectedCell()
+            case .none:
+                break
             }
         }
     }
