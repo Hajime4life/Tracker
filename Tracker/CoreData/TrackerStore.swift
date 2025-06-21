@@ -1,4 +1,3 @@
-import UIKit
 import CoreData
 
 final class TrackerStore: NSObject {
@@ -18,15 +17,15 @@ final class TrackerStore: NSObject {
     private var insertedIndexes: IndexSet?
     private var deletedIndexes: IndexSet?
     private var updatedIndexes: IndexSet?
-    private var movedIndexes: Set<Move>?
-    
+    private var movedIndexes: Set<TrackerStoreUpdateModel.Move>?
+
     // MARK: - Init
     convenience override init() {
         let context = AppDelegate.viewContext
         do {
             try self.init(context: context)
         } catch {
-            assertionFailure("Couldn't init with context: \(error)")
+            assertionFailure("[TS-DEBUG] [TrackerStore \(#function):\(#line)] Failed to init with context: \(error)")
             try! self.init(context: context)
         }
     }
@@ -71,7 +70,15 @@ final class TrackerStore: NSObject {
         trackerCoreData.trackerCategory = category
         category.addToTrackers(trackerCoreData)
         
-        try context.save()
+        do {
+            try context.save()
+            print("[TS-DEBUG] Tracker saved successfully with id: \(tracker.idTrackers)")
+            let fetchedCount = try context.count(for: TrackerCoreData.fetchRequest())
+            print("[TS-DEBUG] Total trackers in context: \(fetchedCount)")
+        } catch {
+            print("[TS-DEBUG] Failed to save tracker: \(error.localizedDescription)")
+            throw error
+        }
     }
     
     func fetchTrackers(withName name: String) throws -> [Tracker] {
@@ -88,6 +95,7 @@ final class TrackerStore: NSObject {
     }
     
     func decodeTracker(from trackerCoreData: TrackerCoreData) throws -> Tracker {
+        
         guard let nameTrackers = trackerCoreData.nameTrackers else {
             throw TrackerStoreException.decodingErrorInvalidNameTrackers
         }
@@ -101,7 +109,7 @@ final class TrackerStore: NSObject {
             throw TrackerStoreException.decodingErrorInvalidScheduleTrackers
         }
         
-        guard let scheduleTrackers = scheduleRaw as? Set<WeekViewModel> else {
+        guard let scheduleTrackers = scheduleRaw as? Set<WeekDay> else {
             throw TrackerStoreException.decodingErrorInvalidScheduleTrackers
         }
         
@@ -129,7 +137,7 @@ extension TrackerStore: NSFetchedResultsControllerDelegate {
         insertedIndexes = IndexSet()
         deletedIndexes = IndexSet()
         updatedIndexes = IndexSet()
-        movedIndexes = Set<Move>()
+        movedIndexes = Set<TrackerStoreUpdateModel.Move>()
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
@@ -137,7 +145,7 @@ extension TrackerStore: NSFetchedResultsControllerDelegate {
               let deleted = deletedIndexes,
               let updated = updatedIndexes,
               let moved = movedIndexes else {
-            assertionFailure("Not all index values were initialized")
+            assertionFailure("[TS-DEBUG] [TrackerStore \(#function):\(#line)] Not all index values were initialized")
             return
         }
         
@@ -174,12 +182,12 @@ extension TrackerStore: NSFetchedResultsControllerDelegate {
                 guard let oldIndexPath = indexPath, let newIndexPath = newIndexPath else {
                     throw FetchedResultsException.missingOldOrNewIndexPath
                 }
-                movedIndexes?.insert(.init(oldIndex: oldIndexPath.item, newIndex: newIndexPath.item))
+                movedIndexes?.insert(TrackerStoreUpdateModel.Move(oldIndex: oldIndexPath.item, newIndex: newIndexPath.item))
             @unknown default:
                 throw FetchedResultsException.unknownChangeType
             }
         } catch {
-            assertionFailure("FRC change error: \(error)")
+            assertionFailure("[TS-DEBUG] [TrackerStore \(#function):\(#line)] FRC change error: \(error)")
         }
     }
 }

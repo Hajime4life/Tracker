@@ -23,8 +23,8 @@ final class TrackerRecordStore: NSObject {
     private var insertedIndexes: IndexSet?
     private var deletedIndexes: IndexSet?
     private var updatedIndexes: IndexSet?
-    private var movedIndexes: Set<Move>?
-    
+    private var movedIndexes: Set<TrackerRecordStoreUpdateModel.Move>?
+
     // MARK: - Init
     convenience override init() {
         let context = AppDelegate.viewContext
@@ -110,7 +110,8 @@ extension TrackerRecordStore: NSFetchedResultsControllerDelegate {
         insertedIndexes = IndexSet()
         deletedIndexes = IndexSet()
         updatedIndexes = IndexSet()
-        movedIndexes = Set<Move>()
+        movedIndexes = Set<TrackerRecordStoreUpdateModel.Move>()
+
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {

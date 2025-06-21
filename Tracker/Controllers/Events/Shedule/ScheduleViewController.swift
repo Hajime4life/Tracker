@@ -7,9 +7,9 @@ final class ScheduleViewController: DefaultController {
     //MARK: - Private Props
     private lazy var dayViews: [UIView] = []
     private lazy var switches: [UISwitch] = []
-    private lazy var selectedDays: Set<WeekViewModel> = []
+    private lazy var selectedDays: Set<WeekDay> = []
     
-    private var initialSelectedDays: Set<WeekViewModel> = []
+    private var initialSelectedDays: Set<WeekDay> = []
     
     private lazy var daysStackView: UIStackView = {
         let stackView = UIStackView()
@@ -31,7 +31,7 @@ final class ScheduleViewController: DefaultController {
         setupScheduleViewController()
     }
     //MARK: - Private Methods
-    private func makeDayNameLabel(for day: WeekViewModel) -> UILabel {
+    private func makeDayNameLabel(for day: WeekDay) -> UILabel {
         let label = UILabel()
         label.text = day.name
         label.font = UIFont.systemFont(ofSize: 17, weight: .regular)
@@ -39,7 +39,7 @@ final class ScheduleViewController: DefaultController {
         return label
     }
     
-    private func makeDayToggle(for day: WeekViewModel) -> UISwitch {
+    private func makeDayToggle(for day: WeekDay) -> UISwitch {
         let switchControl = UISwitch()
         switchControl.onTintColor = .ypBlue
         switchControl.tintColor = .ypSwitch
@@ -76,7 +76,7 @@ final class ScheduleViewController: DefaultController {
     }
     
     private func setupDays() {
-        let days = WeekViewModel.allCases
+        let days = WeekDay.allCases
         for (index, day) in days.enumerated() {
             let dayLabel = makeDayNameLabel(for: day)
             let switchControl = makeDayToggle(for: day)
@@ -120,13 +120,13 @@ final class ScheduleViewController: DefaultController {
         setCenteredInlineTitle(title: .schedule)
     }
     
-    func configure(with initialDays: Set<WeekViewModel>) {
+    func configure(with initialDays: Set<WeekDay>) {
         self.initialSelectedDays = initialDays
     }
     
     // MARK: - Actions
     @objc private func switchChanged(_ sender: UISwitch) {
-        guard let day = WeekViewModel(rawValue: sender.tag) else { return }
+        guard let day = WeekDay(rawValue: sender.tag) else { return }
         
         if sender.isOn {
             selectedDays.insert(day)

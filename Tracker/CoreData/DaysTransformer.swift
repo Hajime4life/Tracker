@@ -24,13 +24,13 @@ final class DaysValueTransformer: ValueTransformer, NSSecureCoding {
     }
     
     override func transformedValue(_ value: Any?) -> Any? {
-        guard let days = value as? Set<WeekViewModel> else { return nil }
+        guard let days = value as? Set<WeekDay> else { return nil }
         return try? JSONEncoder().encode(days)
     }
     
     override func reverseTransformedValue(_ value: Any?) -> Any? {
         guard let data = value as? NSData else { return nil }
-        return try? JSONDecoder().decode(Set<WeekViewModel>.self, from: data as Data)
+        return try? JSONDecoder().decode(Set<WeekDay>.self, from: data as Data)
     }
     
     static func register() {

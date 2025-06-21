@@ -6,13 +6,13 @@ final class NewHabitViewController: DefaultController {
     weak var delegate: NewHabitViewControllerDelegate?
     private let store = TrackerStore()
     
-    private var selectedDays: Set<WeekViewModel> = [] {
+    private var selectedDays: Set<WeekDay> = [] {
         didSet {
             orderedSelectedDays = selectedDays.sorted { $0.rawValue < $1.rawValue }
         }
     }
     
-    private var orderedSelectedDays: [WeekViewModel] = []
+    private var orderedSelectedDays: [WeekDay] = []
     private var trackerName: String?
     private var selectedCategory: String?
     private var selectedEmoji: String?
@@ -24,6 +24,7 @@ final class NewHabitViewController: DefaultController {
         if orderedSelectedDays.count == 7 {
             return "Каждый день"
         } else {
+            print("я решил что их не 7, ведь их = \(orderedSelectedDays.count)")
             return orderedSelectedDays.map { $0.shortName }.joined(separator: ", ")
         }
     }
@@ -179,7 +180,7 @@ final class NewHabitViewController: DefaultController {
 
 // MARK: ScheduleViewControllerDelegate
 extension NewHabitViewController: ScheduleViewControllerDelegate {
-    func scheduleViewController(_ controller: ScheduleViewController, didSelectDays days: Set<WeekViewModel>) {
+    func scheduleViewController(_ controller: ScheduleViewController, didSelectDays days: Set<WeekDay>) {
         selectedDays = days
         scheduleButton.setSubtitle(selectedDaysString)
         updateSaveButtonState()

@@ -7,7 +7,7 @@ final class NewTrackerViewController: DefaultController {
     private let store = TrackerStore()
     private let mode: TrackerCreateType
     
-    private var selectedDays: Set<WeekViewModel> = [] {
+    private var selectedDays: Set<WeekDay> = [] {
         didSet {
             orderedSelectedDays = selectedDays.sorted { $0.rawValue < $1.rawValue }
         }
@@ -18,14 +18,20 @@ final class NewTrackerViewController: DefaultController {
     let params = GeometricParams(cellCount: 6, cellSpacing: 6, leftInset: 18,
                                  rightInset: 19, topInset: 16, bottomInset: 24)
     
-    private var orderedSelectedDays: [WeekViewModel] = []
+    private var orderedSelectedDays: [WeekDay] = []
     private var trackerName: String?
     private var selectedCategory: String?
     private var selectedEmoji: DefaultController.Emojies?
     private var selectedColor: UIColor?
     
     private var selectedDaysString: String {
-        orderedSelectedDays.map { $0.shortName }.joined(separator: ", ")
+        guard !orderedSelectedDays.isEmpty else { return "" }
+        
+        if orderedSelectedDays.count == 7 {
+            return "Каждый день"
+        } else {
+            return orderedSelectedDays.map { $0.shortName }.joined(separator: ", ")
+        }
     }
     
     private var isCategoryImageHidden: Bool = true
@@ -103,6 +109,7 @@ final class NewTrackerViewController: DefaultController {
         setupHelper()
         setupNewTrackerViewController()
         updateSaveButtonState()
+        print("Initial state: name=\(String(describing: trackerName)), category=\(String(describing: selectedCategory)), emoji=\(String(describing: selectedEmoji)), color=\(String(describing: selectedColor)), days=\(selectedDays)")
     }
     
     // MARK: - Private Methods
@@ -160,24 +167,28 @@ final class NewTrackerViewController: DefaultController {
                                                        cellDelegate: self)
     }
     
-    private func makeAndSaveTracker(name: String, category: String, days: Set<WeekViewModel>) {
-        let emoji = selectedEmoji ?? DefaultController.Emojies.allCases.first!
-        let color = selectedColor ?? .gray
-        
-        let tracker = Tracker(
-            nameTrackers: name,
-            colorTrackers: color,
-            emojiTrackers: emoji.rawValue,
-            scheduleTrackers: days
-        )
-        
-        do {
-            try store.addNewTracker(tracker, categoryTitle: category)
-            delegate?.trackerCreationViewController(self, didCreateTracker: tracker, categoryTitle: category)
-            print("Tracker created with id = \(tracker.idTrackers)")
-        } catch {
-            print("Error saving tracker: \(error)")
-        }
+    private func makeAndSaveTracker(name: String, category: String, days: Set<WeekDay>) {
+            guard let emoji = selectedEmoji,
+                  let color = selectedColor
+            else {
+                print("[TS-DEBUG] Failed to create tracker: emoji or color is nil")
+                return
+            }
+            
+            let tracker = Tracker(
+                nameTrackers: name,
+                colorTrackers: color,
+                emojiTrackers: emoji.rawValue,
+                scheduleTrackers: days
+            )
+            
+            do {
+                try store.addNewTracker(tracker, categoryTitle: category)
+                print("[TS-DEBUG] Delegate received tracker with id: \(tracker.idTrackers)")
+                delegate?.trackerCreationViewController(self, didCreateTracker: tracker, categoryTitle: category)
+            } catch {
+                print("[TS-DEBUG] Failed to save tracker: \(error.localizedDescription)")
+            }
     }
     
     // MARK: - Actions
@@ -207,11 +218,18 @@ final class NewTrackerViewController: DefaultController {
     @objc private func didTapSaveButton() {
         guard let name = trackerName, !name.isEmpty,
               let category = selectedCategory
-        else { return }
+        else {
+            print("Validation failed: name=\(String(describing: trackerName)), category=\(String(describing: selectedCategory))")
+            return
+        }
         
-        let days = mode == .habit ? selectedDays : [WeekViewModel.current]
-        guard !days.isEmpty else { return }
+        let days = mode == .habit ? selectedDays : [WeekDay.current]
+        guard !days.isEmpty else {
+            print("Validation failed: no days selected")
+            return
+        }
         
+        print("Attempting to save tracker: name=\(name), category=\(category), days=\(days)")
         makeAndSaveTracker(name: name, category: category, days: days)
         dismissToRootModal()
     }
@@ -232,7 +250,7 @@ enum TrackerCreateType {
 
 // MARK: - ScheduleViewControllerDelegate
 extension NewTrackerViewController: ScheduleViewControllerDelegate {
-    func scheduleViewController(_ controller: ScheduleViewController, didSelectDays days: Set<WeekViewModel>) {
+    func scheduleViewController(_ controller: ScheduleViewController, didSelectDays days: Set<WeekDay>) {
         selectedDays = days
         scheduleButton.setSubtitle(selectedDaysString)
         updateSaveButtonState()

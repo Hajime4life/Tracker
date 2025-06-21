@@ -12,7 +12,7 @@ struct Tracker {
     let nameTrackers: String
     let colorTrackers: UIColor
     let emojiTrackers: String
-    let scheduleTrackers: Set<WeekViewModel>
+    let scheduleTrackers: Set<WeekDay>
 }
 
 struct TrackerRecord {
@@ -20,6 +20,3 @@ struct TrackerRecord {
     let trackerId: Tracker.Identifier
     let date: Date
 }
-
-
-

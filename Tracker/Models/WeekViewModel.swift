@@ -1,6 +1,6 @@
 import Foundation
 
-enum WeekViewModel: Int, CaseIterable, Codable {
+enum WeekDay: Int, CaseIterable, Codable {
     case monday = 1
     case tuesday
     case wednesday
@@ -10,14 +10,14 @@ enum WeekViewModel: Int, CaseIterable, Codable {
     case sunday
     
     // MARK: - Static Methods
-    static func selectedWeek(date: Date) -> WeekViewModel {
+    static func selectedWeek(date: Date) -> WeekDay {
         let calendar = Calendar.current
         let component = calendar.component(.weekday, from: date)
         let rawValue = component == 1 ? 7 : component - 1
-        return WeekViewModel(rawValue: rawValue) ?? .monday
+        return WeekDay(rawValue: rawValue) ?? .monday
     }
     
-    static var current: WeekViewModel {
+    static var current: WeekDay {
         selectedWeek(date: Date())
     }
     

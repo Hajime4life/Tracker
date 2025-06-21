@@ -16,8 +16,8 @@ final class TrackerCategoryStore: NSObject {
     private var insertedIndexes: IndexSet?
     private var deletedIndexes: IndexSet?
     private var updatedIndexes: IndexSet?
-    private var movedIndexes: Set<Move>?
-    
+    private var movedIndexes: Set<TrackerCategoryStoreUpdateModel.Move>?
+
     private let context: NSManagedObjectContext
     private let trackerStore = TrackerStore()
     
@@ -66,7 +66,13 @@ final class TrackerCategoryStore: NSObject {
     func addNewTrackerCategoryCoreData(_ trackerCategory: TrackerCategory, for trackerCoreData: TrackerCoreData) throws {
         let trackerCategoryCoreData = TrackerCategoryCoreData(context: context)
         updateTrackerCategoryCoreData(trackerCategoryCoreData, with: trackerCategory, trackerCoreData: trackerCoreData)
-        try context.save()
+        do {
+            try context.save()
+            print("Сохранено: \(trackerCategory.title)")
+        } catch {
+            print("Ошибка: \(error)")
+            throw error
+        }
     }
     
     func updateTrackerCategoryCoreData(
@@ -82,7 +88,7 @@ final class TrackerCategoryStore: NSObject {
         guard let title = trackerCategoryCoreData.title else {
             throw TrackerCategoryException.decodingErrorInvalidIdTitle
         }
-        guard let rawTrackers = trackerCategoryCoreData.trackers as? NSSet else {
+        guard let rawTrackers = trackerCategoryCoreData.trackers else {
             throw TrackerCategoryException.decodingErrorInvalidTrackers
         }
         let decodedTrackers: [Tracker] = rawTrackers.compactMap { anyElement in
@@ -102,7 +108,7 @@ extension TrackerCategoryStore: NSFetchedResultsControllerDelegate {
         insertedIndexes = IndexSet()
         deletedIndexes = IndexSet()
         updatedIndexes = IndexSet()
-        movedIndexes = Set<Move>()
+        movedIndexes = Set<TrackerCategoryStoreUpdateModel.Move>()
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
