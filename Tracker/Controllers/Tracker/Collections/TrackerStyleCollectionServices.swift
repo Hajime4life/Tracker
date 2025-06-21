@@ -50,6 +50,7 @@ final class TrackerStyleCollectionServices: NSObject {
         collection.delegate = self
         collection.dataSource = self
         collection.allowsMultipleSelection = true
+        collection.backgroundColor = .clear
         collection.reloadData()
     }
     
