@@ -140,8 +140,21 @@ extension TrackerStyleCollectionServices: UICollectionViewDataSource {
         switch styleItem {
             case .emoji(let emoji):
                 cell.configureStyleCell(with: emoji, color: .clear)
+                if emoji == selectedEmoji {
+                    cell.isSelected = true
+                } else {
+                    cell.isSelected = false
+                    cell.backgroundColor = .clear
+                }
             case .color(let color):
                 cell.configureStyleCell(with: nil, color: color)
+            if color == selectedColor {
+                cell.isSelected = true
+                cell.backgroundColor = color.withAlphaComponent(0.3)
+            } else {
+                cell.isSelected = false
+                cell.backgroundColor = .clear
+            }
         }
         return cell
     }
