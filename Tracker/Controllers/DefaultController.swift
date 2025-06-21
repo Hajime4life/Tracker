@@ -18,14 +18,12 @@ class DefaultController: UIViewController {
     }
     
     enum Emojies: String, CaseIterable {
-        case emojiSleepy = "sleepy"
         case emojiSmile = "smile"
         case emojiCatHeartEyes = "cat"
         case emojiHibiscus = "flowers"
         case emojiDog = "dog"
         case emojiHeart = "heart"
         case emojiScream = "scream"
-        case emojiTableTennis = "tennis"
         case emojiAngel = "angel"
         case emojiAngry = "angry"
         case emojiColdFace = "cold"
@@ -33,9 +31,11 @@ class DefaultController: UIViewController {
         case emojiRaisedHands = "hands"
         case emojiBurger = "burger"
         case emojiBroccoli = "broccoli"
-        case emojiGoldMedal = "gold"
+        case emojiTableTennis = "tennis"
+        case emojiGoldMedal = "medal"
         case emojiGuitar = "guitar"
         case emojiIsland = "island"
+        case emojiSleepy = "sleepy"
         
         static var list: [Emojies] { allCases }
         static var names: [String] { allCases.map { $0.rawValue } }

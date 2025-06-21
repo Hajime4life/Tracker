@@ -49,7 +49,7 @@ final class TrackerStyleCollectionServices: NSObject {
         
         collection.delegate = self
         collection.dataSource = self
-        collection.allowsMultipleSelection = false // Изменено на false для одиночного выбора
+        collection.allowsMultipleSelection = true
         collection.reloadData()
     }
     
