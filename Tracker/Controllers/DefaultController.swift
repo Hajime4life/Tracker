@@ -18,14 +18,12 @@ class DefaultController: UIViewController {
     }
     
     enum Emojies: String, CaseIterable {
-        case emojiSleepy = "sleepy"
         case emojiSmile = "smile"
         case emojiCatHeartEyes = "cat"
         case emojiHibiscus = "flowers"
         case emojiDog = "dog"
         case emojiHeart = "heart"
         case emojiScream = "scream"
-        case emojiTableTennis = "tennis"
         case emojiAngel = "angel"
         case emojiAngry = "angry"
         case emojiColdFace = "cold"
@@ -33,16 +31,18 @@ class DefaultController: UIViewController {
         case emojiRaisedHands = "hands"
         case emojiBurger = "burger"
         case emojiBroccoli = "broccoli"
-        case emojiGoldMedal = "gold"
+        case emojiTableTennis = "tennis"
+        case emojiGoldMedal = "medal"
         case emojiGuitar = "guitar"
         case emojiIsland = "island"
+        case emojiSleepy = "sleepy"
         
         static var list: [Emojies] { allCases }
         static var names: [String] { allCases.map { $0.rawValue } }
     }
     
     // MARK: - Overrides
-    override func viewDidLoad(){
+    override func viewDidLoad() {
         super.viewDidLoad()
         configureViewController()
     }
@@ -72,7 +72,7 @@ class DefaultController: UIViewController {
     ) {
         let nav = UINavigationController(rootViewController: viewController)
         nav.modalPresentationStyle = .pageSheet
-        nav.modalTransitionStyle   = transitionStyle
+        nav.modalTransitionStyle = transitionStyle
         present(nav, animated: animated)
     }
     
@@ -85,51 +85,15 @@ class DefaultController: UIViewController {
     }
     
     // MARK: - Private Methods
-    private func configureViewController(){
+    private func configureViewController() {
         view.backgroundColor = .ypWhite
         hideKeyboardOnTap()
-    }
-    
-    func setTitle(
-        title text: NavigationTitles,
-        font: UIFont = .systemFont(ofSize: 16, weight: .medium),
-        color: UIColor = .ypBlack
-    ) {
-        navigationController?.navigationBar.prefersLargeTitles = false
-        navigationItem.largeTitleDisplayMode = .never
-        
-        let label = UILabel()
-        label.text = text.rawValue
-        label.font = font
-        label.textColor = color
-        label.textAlignment = .center
-        
-        navigationItem.titleView = label
     }
     
     private func hideKeyboardOnTap() {
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
-    }
-    
-    func presentSheet(
-        viewController: UIViewController,
-        animated: Bool = true,
-        transitionStyle: UIModalTransitionStyle = .coverVertical
-    ) {
-        let nav = UINavigationController(rootViewController: viewController)
-        nav.modalPresentationStyle = .pageSheet
-        nav.modalTransitionStyle   = transitionStyle
-        present(nav, animated: animated)
-    }
-    
-    func dismissToRoot(animated: Bool = true, completion: (() -> Void)? = nil) {
-        var rootVC = presentingViewController
-        while let parent = rootVC?.presentingViewController {
-            rootVC = parent
-        }
-        rootVC?.dismiss(animated: animated, completion: completion)
     }
     
     // MARK: - Actions
