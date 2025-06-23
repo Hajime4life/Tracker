@@ -91,11 +91,30 @@ final class TrackerStore: NSObject {
     func fetchTrackerCoreData(by id: UUID) -> TrackerCoreData? {
         let req: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
         req.predicate = NSPredicate(format: "idTrackers == %@", id as CVarArg)
-        return (try? context.fetch(req))?.first
+        
+        // Выводим все трекеры для отладки
+        let allTrackersReq: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
+        do {
+            let allTrackers = try context.fetch(allTrackersReq)
+            let trackerInfo = allTrackers.map { tracker in
+                "ID: \(tracker.idTrackers?.uuidString ?? "nil"), Name: \(tracker)"
+            }
+            print("[TS-DEBUG] All trackers in Core Data: \(trackerInfo)")
+        } catch {
+            print("[TS-DEBUG] Error fetching all trackers: \(error)")
+        }
+        
+        do {
+            let result = try context.fetch(req).first
+            print("[TS-DEBUG] Fetching tracker with ID: \(id), found: \(result != nil ? "yes" : "no")")
+            return result
+        } catch {
+            print("[TS-DEBUG] Error fetching tracker: \(error)")
+            return nil
+        }
     }
     
     func decodeTracker(from trackerCoreData: TrackerCoreData) throws -> Tracker {
-        
         guard let nameTrackers = trackerCoreData.nameTrackers else {
             throw TrackerStoreException.decodingErrorInvalidNameTrackers
         }
@@ -104,6 +123,9 @@ final class TrackerStore: NSObject {
         }
         guard let emojiTrackers = trackerCoreData.emojiTrackers else {
             throw TrackerStoreException.decodingErrorInvalidEmojies
+        }
+        guard let idTrackers = trackerCoreData.idTrackers else {
+            throw TrackerStoreException.decodingErrorInvalidIdTrackers
         }
         guard let scheduleRaw = trackerCoreData.scheduleTrackers else {
             throw TrackerStoreException.decodingErrorInvalidScheduleTrackers
@@ -114,6 +136,7 @@ final class TrackerStore: NSObject {
         }
         
         return Tracker(
+            idTrackers: idTrackers,
             nameTrackers: nameTrackers,
             colorTrackers: uiColorMarshalling.color(from: colorTrackers),
             emojiTrackers: emojiTrackers,

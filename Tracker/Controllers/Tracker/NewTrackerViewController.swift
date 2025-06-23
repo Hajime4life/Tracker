@@ -109,7 +109,6 @@ final class NewTrackerViewController: DefaultController {
         setupHelper()
         setupNewTrackerViewController()
         updateSaveButtonState()
-        print("Initial state: name=\(String(describing: trackerName)), category=\(String(describing: selectedCategory)), emoji=\(String(describing: selectedEmoji)), color=\(String(describing: selectedColor)), days=\(selectedDays)")
     }
     
     // MARK: - Private Methods
@@ -171,7 +170,7 @@ final class NewTrackerViewController: DefaultController {
             guard let emoji = selectedEmoji,
                   let color = selectedColor
             else {
-                print("[TS-DEBUG] Failed to create tracker: emoji or color is nil")
+                print("[+] Ошибка создания трекера: не вбран эмодзи или цвет")
                 return
             }
             
@@ -184,10 +183,10 @@ final class NewTrackerViewController: DefaultController {
             
             do {
                 try store.addNewTracker(tracker, categoryTitle: category)
-                print("[TS-DEBUG] Delegate received tracker with id: \(tracker.idTrackers)")
+                print("[+] Получен трекер с id: \(tracker.idTrackers)")
                 delegate?.trackerCreationViewController(self, didCreateTracker: tracker, categoryTitle: category)
             } catch {
-                print("[TS-DEBUG] Failed to save tracker: \(error.localizedDescription)")
+                print("[-] Ошибка сохранения трекера: \(error.localizedDescription)")
             }
     }
     
@@ -219,17 +218,16 @@ final class NewTrackerViewController: DefaultController {
         guard let name = trackerName, !name.isEmpty,
               let category = selectedCategory
         else {
-            print("Validation failed: name=\(String(describing: trackerName)), category=\(String(describing: selectedCategory))")
+            print("[x] Validation failed: name=\(String(describing: trackerName)), category=\(String(describing: selectedCategory))")
             return
         }
         
         let days = mode == .habit ? selectedDays : [WeekDay.current]
         guard !days.isEmpty else {
-            print("Validation failed: no days selected")
+            print("[x] Validation failed: no days selected")
             return
         }
         
-        print("Attempting to save tracker: name=\(name), category=\(category), days=\(days)")
         makeAndSaveTracker(name: name, category: category, days: days)
         dismissToRootModal()
     }

@@ -96,6 +96,7 @@ final class TrackerRecordStore: NSObject {
         
         do {
             let results = try context.fetch(fetchRequest)
+            print("[TS-DEBUG] Fetching record for trackerId: \(trackerId), found: \(results.first != nil ? "yes" : "no")")
             return results.first
         } catch {
             assertionFailure("Failed to fetch TrackerRecordCoreData: \(error)")

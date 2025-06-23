@@ -76,7 +76,7 @@ final class TrackerCollectionService: NSObject {
     
     private func addEmoji(named rawName: String) {
         guard let emoji = DefaultController.Emojies(rawValue: rawName) else {
-            print("Emoji not found")
+            print("[w] Emoji not found")
             return
         }
         emojis.append(emoji)

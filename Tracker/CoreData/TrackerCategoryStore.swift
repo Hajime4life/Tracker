@@ -59,7 +59,7 @@ final class TrackerCategoryStore: NSObject {
         do {
             try controller.performFetch()
         } catch {
-            print("Failed to perform fetch for TrackerCategoryCoreData: \(error)")
+            print("[x] Failed to perform fetch for TrackerCategoryCoreData: \(error)")
         }
     }
     
@@ -68,9 +68,7 @@ final class TrackerCategoryStore: NSObject {
         updateTrackerCategoryCoreData(trackerCategoryCoreData, with: trackerCategory, trackerCoreData: trackerCoreData)
         do {
             try context.save()
-            print("Сохранено: \(trackerCategory.title)")
         } catch {
-            print("Ошибка: \(error)")
             throw error
         }
     }

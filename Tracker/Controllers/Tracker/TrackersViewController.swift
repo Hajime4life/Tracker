@@ -5,6 +5,7 @@ final class TrackersViewController: DefaultController {
     private let store = TrackerStore()
     private let categoryStore = TrackerCategoryStore()
     private let recordStore = TrackerRecordStore()
+
     
     private var service: TrackerCollectionService?
     let params = InsetParams(cellCount: 2, cellSpacing: 10, leftInset: 16, rightInset: 16)
@@ -33,11 +34,11 @@ final class TrackersViewController: DefaultController {
         return searchController
     }()
     
-    private lazy var plusButton: UIButton = {
+    private lazy var createPlusButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setImage(UIImage(named: "plus"), for: .normal)
         button.tintColor = .ypBlack
-        button.addTarget(self, action: #selector(onTapPlusButton), for: .touchUpInside)
+        button.addTarget(self, action: #selector(onTapcreatePlusButton), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -114,6 +115,8 @@ final class TrackersViewController: DefaultController {
         loadCategories()
         updateCompletedTrackers()
         updatePlaceholderVisibility(using: categories)
+        
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -141,7 +144,7 @@ final class TrackersViewController: DefaultController {
         navigationItem.hidesSearchBarWhenScrolling = false
         definesPresentationContext = true
         
-        let leftItemButton = UIBarButtonItem(customView: plusButton)
+        let leftItemButton = UIBarButtonItem(customView: createPlusButton)
         navigationItem.leftBarButtonItem = leftItemButton
         navigationItem.leftBarButtonItem?.tintColor = .black
         
@@ -196,20 +199,20 @@ final class TrackersViewController: DefaultController {
         
         do {
             guard let trackerCD = store.fetchTrackerCoreData(by: trackerId) else {
-                print("[TS-DEBUG] Трекер не найден для ID: \(trackerId)")
+                print("[x] Трекер не найден для ID: \(trackerId)")
                 return
             }
             
             if let recordCD = recordStore.fetchRecordCoreData(trackerId: trackerId, on: picked) {
                 try recordStore.deleteRecord(recordCD)
-                print("[TS-DEBUG] Удалили запись выполнения")
+                print("[.] Удалили запись выполнения")
             } else {
                 let record = TrackerRecord(id: UUID(), trackerId: trackerId, date: picked)
                 try recordStore.addNewTrackerRecordCoreData(record, for: trackerCD)
-                print("[TS-DEBUG] Добавили запись выполнения")
+                print("[.] Добавили запись выполнения")
             }
         } catch {
-            print("[TS-DEBUG] Ошибка при обновлении отметки: \(error)")
+            print("[x] Ошибка при обновлении отметки: \(error)")
         }
     }
     
@@ -240,7 +243,7 @@ final class TrackersViewController: DefaultController {
             }
             return trackers.isEmpty ? nil : TrackerCategory(title: category.title, trackers: trackers)
         }
-        print("[TS-DEBUG] Filtered categories: \(filtered.map { ($0.title, $0.trackers.count) })")
+        print("[.] Отфильтрованные категории: \(filtered.map { ($0.title, $0.trackers.count) })")
         service?.updateCategories(with: filtered)
         updatePlaceholderVisibility(using: filtered)
     }
@@ -256,7 +259,7 @@ final class TrackersViewController: DefaultController {
     }
     
     // MARK: - Actions
-    @objc private func onTapPlusButton() {
+    @objc private func onTapcreatePlusButton() {
         let typeVC = TrackerTypeViewController()
         typeVC.habitDelegate = self
         presentPageSheet(viewController: typeVC)
@@ -305,6 +308,14 @@ extension TrackersViewController: NewHabitViewControllerDelegate {
 
 // MARK: - TrackerCellDelegate
 extension TrackersViewController: TrackerCellDelegate {
+    func dayString(for count: Int) -> String {
+        let lastDigit = count % 10, lastTwoDigits = count % 100
+        if lastDigit == 1 && lastTwoDigits != 11 { return "день" }
+        if (2...4).contains(lastDigit) && !(12...14).contains(lastTwoDigits) { return "дня" }
+        return "дней"
+    }
+    
+    
     func trackerCellDidTapPlus(_ cell: TrackerCell, id: UUID) {
         let today = currentDate
         toggleTrackerCompletion(for: id, on: today)
@@ -347,5 +358,31 @@ extension TrackersViewController: TrackerCategoryStoreDelegate {
 extension TrackersViewController: TrackerRecordStoreDelegate {
     func store(_ store: TrackerRecordStore, didUpdate update: TrackerRecordStoreUpdateModel) {
         DispatchQueue.main.async { self.updateCompletedTrackers() }
+    }
+}
+
+// MARK: TrackerCreationViewControllerDelegate
+extension TrackersViewController: TrackerCreationViewControllerDelegate {
+    
+    func trackerCreationViewController(_ controller: NewTrackerViewController, didCreateTracker tracker: Tracker,
+                                categoryTitle: String) {
+        
+        if let indexPath = categories.firstIndex(where: { $0.title == categoryTitle }){
+            let old = categories[indexPath]
+            let updated = TrackerCategory(
+                title: old.title,
+                trackers: old.trackers + [tracker]
+            )
+            categories[indexPath] = updated
+        } else  {
+            let newCat = TrackerCategory(
+                title: categoryTitle,
+                trackers: [tracker]
+            )
+            categories.append(newCat)
+        }
+        newTrackers.append(tracker)
+        service?.updateCategories(with: categories)
+        updatePlaceholderVisibility(using: categories)
     }
 }

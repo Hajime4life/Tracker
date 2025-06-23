@@ -173,7 +173,7 @@ final class NewHabitViewController: DefaultController {
             delegate?.newHabitViewController(self, didCreateTracker: tracker, categoryTitle: category)
             dismissToRootModal()
         } catch {
-            print("❌ Ошибка сохранения трекера: \(error)")
+            print("[x] Ошибка сохранения трекера: \(error)")
         }
     }
 }

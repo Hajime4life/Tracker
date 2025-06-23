@@ -55,6 +55,7 @@ final class TrackerCollectionServices: NSObject {
     func updateCategories(with newCategories: [TrackerCategory], footerTitles: [String]) {
         self.categories = newCategories
         self.footerTitles = footerTitles
+        print("[TS-DEBUG] Updated categories: \(newCategories.map { ($0.title, $0.trackers.map { ($0.idTrackers, $0.nameTrackers) }) })")
         collection.reloadData()
     }
     
@@ -115,11 +116,14 @@ extension TrackerCollectionServices: UICollectionViewDataSource {
         let category = categories[indexPath.section]
         let tracker = category.trackers[indexPath.item]
         
+        print("[TS-DEBUG] Configuring cell at \(indexPath), ID: \(tracker.idTrackers), name: \(tracker.nameTrackers), emoji: \(tracker.emojiTrackers)")
+        
         guard let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: TrackerCell.identifier,
             for: indexPath
         ) as? TrackerCell,
               let emoji = DefaultController.Emojies(rawValue: tracker.emojiTrackers) else {
+            print("[TS-DEBUG] Failed to dequeue TrackerCell or invalid emoji: \(tracker.emojiTrackers)")
             return UICollectionViewCell()
         }
         
