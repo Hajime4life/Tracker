@@ -15,8 +15,13 @@ final class NewTrackerViewController: DefaultController {
     
     private var styleServices: TrackerStyleCollectionServices?
     
-    let params = GeometricParams(cellCount: 6, cellSpacing: 6, leftInset: 18,
-                                 rightInset: 19, topInset: 16, bottomInset: 24)
+    let params = GeometricParams(
+        cellCount: 6,
+        cellSpacing: 6,
+        leftInset: 18,
+        rightInset: 19,
+        topInset: 16,
+        bottomInset: 24)
     
     private var orderedSelectedDays: [WeekDay] = []
     private var trackerName: String?
@@ -134,7 +139,7 @@ final class NewTrackerViewController: DefaultController {
             bottomButtonsStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
             bottomButtonsStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
-            styleCollectionView.topAnchor.constraint(equalTo: (mode == .habit ? buttonStackView : topButtonsStackView).bottomAnchor, constant: 16),
+            styleCollectionView.topAnchor.constraint(equalTo: (mode == .habit ? buttonStackView : topButtonsStackView).bottomAnchor, constant: 32),
             styleCollectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             styleCollectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             styleCollectionView.bottomAnchor.constraint(equalTo: bottomButtonsStackView.topAnchor, constant: -16)
