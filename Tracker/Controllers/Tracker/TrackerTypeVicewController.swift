@@ -1,11 +1,10 @@
 import UIKit
 
-
 final class TrackerTypeViewController: DefaultController {
     
     // MARK: - Props
     weak var habitDelegate: NewHabitViewControllerDelegate?
-
+    
     private lazy var habitButton = DefaultButton(title: ButtonTypes.habit,
                                               target: self,
                                               action: #selector(tapHabitButton))
@@ -13,9 +12,9 @@ final class TrackerTypeViewController: DefaultController {
     private lazy var eventsButton = DefaultButton(title: .irregularEvent,
                                                target: self,
                                                action: #selector(tapEventsButton))
-
+    
     private lazy var buttonsStackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [habitButton,eventsButton])
+        let stack = UIStackView(arrangedSubviews: [habitButton, eventsButton])
         stack.axis = .vertical
         stack.spacing = 8
         stack.alignment = .fill
@@ -24,13 +23,14 @@ final class TrackerTypeViewController: DefaultController {
     }()
     
     //MARK: Overrides
-    override func viewDidLoad(){
+    override func viewDidLoad() {
         super.viewDidLoad()
         configurationTrackerTypeView()
         setCenteredInlineTitle(title: .createTracker)
     }
+    
     //MARK: Private Methods
-    private func configurationTrackerTypeView(){
+    private func configurationTrackerTypeView() {
         view.addSubview(buttonsStackView)
         
         [buttonsStackView].hideMask()
@@ -43,13 +43,15 @@ final class TrackerTypeViewController: DefaultController {
     }
     
     // MARK: - Actions
-    @objc private func tapHabitButton(){
-        let newVC = NewHabitViewController()
-        newVC.delegate = habitDelegate
+    @objc private func tapHabitButton() {
+        let newVC = NewTrackerViewController(mode: .habit)
+        newVC.delegate = habitDelegate as? TrackerCreationViewControllerDelegate
         presentPageSheet(viewController: newVC)
     }
     
-    @objc private func tapEventsButton(){
-        presentPageSheet(viewController: EventsViewController())
+    @objc private func tapEventsButton() {
+        let newVC = NewTrackerViewController(mode: .event)
+        newVC.delegate = habitDelegate as? TrackerCreationViewControllerDelegate
+        presentPageSheet(viewController: newVC)
     }
 }

@@ -24,11 +24,7 @@ final class TrackerCell: UICollectionViewCell {
         view.layer.cornerRadius = Constants.contentCornerRadius
         view.clipsToBounds = true
         view.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            view.heightAnchor.constraint(equalToConstant: 90)
-        ])
-        
+        view.isUserInteractionEnabled = true
         return view
     }()
     
@@ -69,22 +65,29 @@ final class TrackerCell: UICollectionViewCell {
         return label
     }()
     
+    private lazy var plusButtonContainer: UIView = {
+        let view = UIView()
+        view.backgroundColor = .clear
+        view.isUserInteractionEnabled = true
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     private lazy var plusButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setImage(UIImage(named: "plus"), for: .normal)
         button.setImage(UIImage(named: "checkmark"), for: .selected)
         button.tintColor = .ypWhite
         button.backgroundColor = containerCellView.backgroundColor
-        
-        [button].hideMask()
-        
+        button.isUserInteractionEnabled = true
+        button.translatesAutoresizingMaskIntoConstraints = false
+ 
         NSLayoutConstraint.activate([
             button.heightAnchor.constraint(equalToConstant: Constants.plusButtonSize),
             button.widthAnchor.constraint(equalToConstant: Constants.plusButtonSize)
         ])
         
         button.layer.cornerRadius = Constants.plusButtonSize / 2
-        button.clipsToBounds = true
         button.addTarget(self, action: #selector(didTapPlusButton), for: .touchUpInside)
         return button
     }()
@@ -93,6 +96,10 @@ final class TrackerCell: UICollectionViewCell {
         let view = UIView()
         view.backgroundColor = .clear
         view.translatesAutoresizingMaskIntoConstraints = false
+        view.isUserInteractionEnabled = true
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapFooterView))
+        view.addGestureRecognizer(tapGesture)
         
         NSLayoutConstraint.activate([
             view.heightAnchor.constraint(equalToConstant: 58)
@@ -107,6 +114,7 @@ final class TrackerCell: UICollectionViewCell {
         stack.spacing = .zero
         stack.alignment = .fill
         stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.isUserInteractionEnabled = true
         return stack
     }()
     
@@ -122,7 +130,7 @@ final class TrackerCell: UICollectionViewCell {
         return nil
     }
     
-    override func prepareForReuse(){
+    override func prepareForReuse() {
         super.prepareForReuse()
         plusButton.isSelected = false
         plusButton.backgroundColor = containerCellView.backgroundColor
@@ -131,7 +139,7 @@ final class TrackerCell: UICollectionViewCell {
     }
     
     // MARK: - Private Methods
-    private func resetCell(){
+    private func resetCell() {
         contentView.backgroundColor = nil
         emojiImageView.image = nil
         trackerLabel.text = nil
@@ -193,7 +201,7 @@ final class TrackerCell: UICollectionViewCell {
         plusButton.backgroundColor = baseColor.withAlphaComponent(alpha)
     }
     
-    //MARK: - Public Methods
+    // MARK: - Public Methods
     func configureCell(with emoji: DefaultController.Emojies,
                        text: String,
                        color: UIColor,
@@ -212,13 +220,20 @@ final class TrackerCell: UICollectionViewCell {
         updatePlusButtonAlpha()
     }
     
-    
-    
-    //MARK: - Actions
-    @objc private func didTapPlusButton(){
+    // MARK: - Actions
+    @objc private func didTapPlusButton() {
+        print("[.] Нажали на 'Выполнено'")
         plusButton.isSelected.toggle()
         updatePlusButtonAlpha()
-        guard let trackerId = trackerId else { return }
+        guard let trackerId = trackerId else {
+            print("[x] Пустой трекер ID")
+            return
+        }
         delegate?.trackerCellDidTapPlus(self, id: trackerId)
     }
+    
+    @objc private func didTapFooterView() {
+        print("[TS-DEBUG] Tapped emojiFooterView")
+    }
 }
+
