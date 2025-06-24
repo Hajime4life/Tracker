@@ -1,10 +1,3 @@
-//
-//  StatisticsService.swift
-//  Tracker
-//
-//  Created by Алина on 17.06.2025.
-//
-
 import Foundation
 
 final class StatisticsService: StatisticsServiceProtocol {

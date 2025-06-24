@@ -1,9 +1,3 @@
-//
-//  StatisticCardCell.swift
-//  Tracker
-//
-//  Created by Алина on 17.06.2025.
-//
 import UIKit
 
 final class StatisticCardCell: UITableViewCell {

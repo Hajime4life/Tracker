@@ -27,7 +27,7 @@ final class CalendarViewController: UIViewController {
         let view = UIView()
         view.backgroundColor = .systemBackground
         view.layer.cornerRadius = 13
-        view.layer.shadowColor = UIColor.black.cgColor
+        view.layer.shadowColor = UIColor.ypBlack.cgColor
         view.layer.shadowOpacity = 0.2
         view.layer.shadowOffset = CGSize(width: 0, height: 5)
         view.layer.shadowRadius = 10
@@ -42,7 +42,6 @@ final class CalendarViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        overrideUserInterfaceStyle = .light
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(onZoneTapped))
         tapGesture.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGesture)

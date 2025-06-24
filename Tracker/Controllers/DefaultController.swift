@@ -2,7 +2,7 @@ import UIKit
 
 class DefaultController: UIViewController {
     
-    // MARK: - Public Props
+    // MARK: - Enums
     enum NavigationTitles: String {
         case createTracker = "screen.createTracker"
         case newHabit = "screen.newHabit"
@@ -199,6 +199,7 @@ class DefaultController: UIViewController {
     // MARK: - Overrides
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .systemBackground
         configureViewController()
     }
     
@@ -242,6 +243,7 @@ class DefaultController: UIViewController {
     // MARK: - Private Methods
     private func configureViewController() {
         view.backgroundColor = .ypWhite
+        view.backgroundColor = .systemBackground
         hideKeyboardOnTap()
     }
     

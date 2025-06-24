@@ -72,7 +72,7 @@ final class TrackersViewController: DefaultController {
     private lazy var dateButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle(DateFormatter.dateFormatter.string(from: Date()), for: .normal)
-        button.setTitleColor(.ypBlack, for: .normal)
+        button.setTitleColor(.black, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         button.backgroundColor = .ypLightGray
         button.layer.cornerRadius = 8
@@ -186,7 +186,6 @@ final class TrackersViewController: DefaultController {
         
         let leftItemButton = UIBarButtonItem(customView: createPlusButton)
         navigationItem.leftBarButtonItem = leftItemButton
-       // navigationItem.leftBarButtonItem?.tintColor = .black
         
         let rightItemButton = UIBarButtonItem(customView: dateButton)
         navigationItem.rightBarButtonItem = rightItemButton
@@ -292,17 +291,7 @@ final class TrackersViewController: DefaultController {
         updateFilterButtonVisibility()
     }
     
-//    private func filtersTrackers(for weekDay: WeekDay) {
-//        let filtered = categories.compactMap { category in
-//            let trackers = category.trackers.filter {
-//                $0.scheduleTrackers.contains(weekDay)
-//            }
-//            return trackers.isEmpty ? nil : TrackerCategory(title: category.title, trackers: trackers)
-//        }
-//        print("[.] Отфильтрованные категории: \(filtered.map { ($0.title, $0.trackers.count) })")
-//        service?.updateCategories(with: filtered)
-//        updatePlaceholderVisibility(using: filtered)
-//    }
+
     private func filtersTrackers(for weekDay: WeekDay) {
         let filterService = TrackerFilterService(
             currentFilter: currentFilter,
