@@ -1,0 +1,78 @@
+"placeholder.trackerName" = "Enter tracker name";
+"placeholder.categoryName" = "Enter category name";
+"placeholder.schedule" = "Enter schedule";
+"placeholder.search" = "Search";
+
+"screen.createTracker" = "Create Tracker";
+"screen.newHabit" = "New Habit";
+"screen.createHabit" = "Create Habit";
+"screen.editHabit" = "Edit Habit";
+"screen.category" = "Category";
+"screen.newCategory" = "New Category";
+"screen.editCategory" = "Edit Category";
+"screen.schedule" = "Schedule";
+"screen.filters" = "Filters";
+"screen.tracker" = "Trackers";
+"screen.newEvents" = "New Irregular Event";
+
+"button.addCategory" = "Add Category";
+"button.create" = "Create";
+"button.done" = "Done";
+"button.cancel" = "Cancel";
+"button.filters" = "Filters";
+"button.irregularEvent" = "Irregular Event";
+"button.habit" = "Habit";
+"button.category" = "Category";
+"button.schedule" = "Schedule";
+"button.onBoarding" = "Now that’s technology!";
+"button.save" = "Save";
+
+"title.emoji" = "Emoji";
+"title.color" = "Color";
+ 
+"tab.trackers" = "Trackers";
+"tab.statistics" = "Statistics";
+
+"label.emptyState" = "What do you want to track?";
+"label.searchPlaceholder" = "Search";
+"label.categoryDizzyLabel" = "You can group habits and events\nby meaning";
+
+"label.onBoardingBlue" = "Track only what you want";
+"label.onBoardingRed" = "Even if it's not water and yoga";
+
+"weekday.monday" = "Monday";
+"weekday.tuesday" = "Tuesday";
+"weekday.wednesday" = "Wednesday";
+"weekday.thursday" = "Thursday";
+"weekday.friday" = "Friday";
+"weekday.saturday" = "Saturday";
+"weekday.sunday" = "Sunday";
+
+"weekday.short.monday" = "Mon";
+"weekday.short.tuesday" = "Tue";
+"weekday.short.wednesday" = "Wed";
+"weekday.short.thursday" = "Thu";
+"weekday.short.friday" = "Fri";
+"weekday.short.saturday" = "Sat";
+"weekday.short.sunday" = "Sun";
+
+"titleStatistic.bestPeriod" = "Best Streak";
+"titleStatistic.bestDays" = "Perfect Days";
+"titleStatistic.endTrackers" = "Trackers Completed";
+"titleStatistic.averageValue" = "Average Value";
+"titleStatistic.placeholder" = "Nothing to analyze yet";
+
+"alert.delete.title" = "Are you sure you want to delete the tracker?";
+"alert.delete.confirm" = "Delete";
+"alert.delete.cancel" = "Cancel";
+"action.unpin" = "Unpin";
+"action.pin" = "Pin";
+"action.edit" = "Edit";
+
+"title.isPinned" = "Pinned";
+
+"filterOption.allTrackers" = "All Trackers";
+"filterOption.todayTrackers" = "Trackers for Today";
+"filterOption.completedTrackers" = "Completed";
+"filterOption.uncompletedTrackers" = "Uncompleted";
+"label.nothingFound" = "Nothing found";

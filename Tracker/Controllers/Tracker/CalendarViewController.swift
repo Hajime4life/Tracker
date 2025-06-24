@@ -2,8 +2,10 @@ import UIKit
 
 final class CalendarViewController: UIViewController {
     
+    // MARK: - Public Props
+    var onDatePicked: ((Date) -> Void)?
+    
     // MARK: - Private Props
-
     private lazy var calendarPicker: UIDatePicker = {
         let picker = UIDatePicker()
         picker.datePickerMode = .date

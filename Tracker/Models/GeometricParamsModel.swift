@@ -5,8 +5,8 @@ struct GeometricParams {
     let cellSpacing: CGFloat
     let leftInset: CGFloat
     let rightInset: CGFloat
-    let topInset: CGFloat
-    let bottomInset: CGFloat
+    let topInset:     CGFloat
+    let bottomInset:  CGFloat
     
     init(
         cellCount: Int,

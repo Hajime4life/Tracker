@@ -17,7 +17,8 @@ final class TrackerCell: UICollectionViewCell {
     static let identifier = Identifier.TrackerCollection.trackerCell.rawValue
     
     private var trackerId: UUID?
-    
+    private var isPinnedState: Bool = false
+
     private lazy var containerCellView: UIView = {
         let view = UIView()
         view.backgroundColor = .clear
@@ -26,6 +27,14 @@ final class TrackerCell: UICollectionViewCell {
         view.translatesAutoresizingMaskIntoConstraints = false
         view.isUserInteractionEnabled = true
         return view
+    }()
+    private lazy var pinIndicatorView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: DefaultController.ImageNames.pinIndicator.imageName)
+        imageView.tintColor = .white
+        imageView.isHidden = true
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
     }()
     
     private lazy var trackerLabel: UILabel = {
@@ -118,6 +127,7 @@ final class TrackerCell: UICollectionViewCell {
         return stack
     }()
     
+    
     // MARK: - Override Methods
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -139,7 +149,7 @@ final class TrackerCell: UICollectionViewCell {
     }
     
     // MARK: - Private Methods
-    private func resetCell() {
+    private func resetCell(){
         contentView.backgroundColor = nil
         emojiImageView.image = nil
         trackerLabel.text = nil
@@ -148,6 +158,7 @@ final class TrackerCell: UICollectionViewCell {
         plusButton.backgroundColor = nil
         updatePlusButtonAlpha()
         trackerId = nil
+        pinIndicatorView.isHidden = true
     }
     
     private func setupCell() {
@@ -206,15 +217,19 @@ final class TrackerCell: UICollectionViewCell {
                        text: String,
                        color: UIColor,
                        idTrackers: UUID,
+                       isPinned: Bool,
                        for date: Date) {
-        emojiImageView.image = UIImage(named: emoji.rawValue)
+        emojiImageView.image = UIImage(named: emoji.imageName)
         trackerLabel.text = text
         containerCellView.backgroundColor = color
         plusButton.backgroundColor = color
         trackerId = idTrackers
+        isPinnedState = isPinned
+        pinIndicatorView.isHidden = !isPinned
+        pinIndicatorView.tintColor = .ypWhite
         
         let total = delegate?.completedDaysCount(for: idTrackers) ?? 0
-        daysLabel.text = "\(total.daysDeclension())"
+        daysLabel.text = "\(total) \(delegate?.dayString(for: total) ?? "")"
         let isDoneToday = delegate?.isTrackerCompleted(for: idTrackers, on: date) ?? false
         plusButton.isSelected = isDoneToday
         updatePlusButtonAlpha()
@@ -237,3 +252,25 @@ final class TrackerCell: UICollectionViewCell {
     }
 }
 
+extension TrackerCell: UIContextMenuInteractionDelegate {
+    func contextMenuInteraction(
+        _ interaction: UIContextMenuInteraction,
+        configurationForMenuAtLocation location: CGPoint
+    ) -> UIContextMenuConfiguration? {
+        guard let id = trackerId else { return nil }
+        let pinTitle = isPinnedState ? DefaultController.Alert.actionUnpin.text : DefaultController.Alert.actionPin.text
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
+            let pin = UIAction(title: pinTitle) { _ in
+                self.delegate?.didTogglePin(trackerId: id)
+            }
+            let edit = UIAction(title: DefaultController.Alert.actionEdit.text) { _ in
+                self.delegate?.didRequestEdit(trackerId: id)
+            }
+            let delete = UIAction(title: DefaultController.Alert.deleteConfirm.text,
+                                  attributes: .destructive) { _ in
+                self.delegate?.didRequestDelete(trackerId: id)
+            }
+            return UIMenu(title: "", children: [pin, edit, delete])
+        }
+    }
+}

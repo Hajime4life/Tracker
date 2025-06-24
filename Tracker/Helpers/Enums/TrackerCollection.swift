@@ -22,4 +22,15 @@ enum Identifier {
         
         var text: String { rawValue }
     }
+    enum TrackerStatisticsTableView: String {
+        case statisticCardCell = "StatisticCardCell"
+        
+        var text: String { rawValue }
+    }
+    
+    enum TrackerFiltersViewController: String {
+        case trackerFiltersCell = "TrackerFiltersCell"
+        
+        var text: String { rawValue }
+    }
 }

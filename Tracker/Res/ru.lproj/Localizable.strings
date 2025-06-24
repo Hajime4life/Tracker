@@ -1,0 +1,80 @@
+"placeholder.trackerName" = "Введите название трекера";
+"placeholder.categoryName" = "Введите название категории";
+"placeholder.schedule" = "Введите расписание";
+"placeholder.search" = "Поиск";
+
+"screen.createTracker" = "Создание трекера";
+"screen.newHabit" = "Новая привычка";
+"screen.createHabit" = "Создание привычки";
+"screen.editHabit" = "Редактирование привычки";
+"screen.category" = "Категория";
+"screen.newCategory" = "Новая категория";
+"screen.editCategory" = "Редактирование категории";
+"screen.schedule" = "Расписание";
+"screen.filters" = "Фильтры";
+"screen.tracker" = "Трекеры";
+"screen.newEvents" = "Новое нерегулярное событие";
+
+"button.addCategory" = "Добавить категорию";
+"button.create" = "Создать";
+"button.done" = "Готово";
+"button.cancel" = "Отменить";
+"button.filters" = "Фильтры";
+"button.irregularEvent" = "Нерегулярное событие";
+"button.habit" = "Привычка";
+"button.category" = "Категория";
+"button.schedule" = "Расписание";
+"button.onBoarding" = "Вот это технологии!";
+"button.save" = "Сохранить";
+
+"title.emoji" = "Emoji";
+"title.color" = "Цвет";
+
+"tab.trackers" = "Трекеры";
+"tab.statistics" = "Статистика";
+
+"label.emptyState" = "Что будем отслеживать?";
+"label.searchPlaceholder" = "Поиск";
+"label.categoryDizzyLabel" = "Привычки и события можно\nобъединить по смыслу";
+
+"label.onBoardingBlue" = "Отслеживайте только то, что хотите";
+"label.onBoardingRed" = "Даже если это не литры воды и йога";
+
+/* Weekday */
+"weekday.monday" = "Понедельник";
+"weekday.tuesday" = "Вторник";
+"weekday.wednesday" = "Среда";
+"weekday.thursday" = "Четверг";
+"weekday.friday" = "Пятница";
+"weekday.saturday" = "Суббота";
+"weekday.sunday" = "Воскресенье";
+
+"weekday.short.monday" = "Пн";
+"weekday.short.tuesday" = "Вт";
+"weekday.short.wednesday" = "Ср";
+"weekday.short.thursday" = "Чт";
+"weekday.short.friday" = "Пт";
+"weekday.short.saturday" = "Сб";
+"weekday.short.sunday" = "Вс";
+
+/* Statistics screen titles */
+"titleStatistic.bestPeriod" = "Лучший период";
+"titleStatistic.bestDays" = "Идеальные дни";
+"titleStatistic.endTrackers" = "Трекеров завершено";
+"titleStatistic.averageValue" = "Среднее значение";
+"titleStatistic.placeholder" = "Анализировать пока нечего";
+
+"alert.delete.title" = "Уверены, что хотите удалить трекер?";
+"alert.delete.confirm" = "Удалить";
+"alert.delete.cancel" = "Отменить";
+"action.unpin" = "Открепить";
+"action.pin" = "Закрепить";
+"action.edit" = "Редактировать";
+
+"title.isPinned" = "Закрепленные";
+
+"filterOption.allTrackers" = "Все трекеры";
+"filterOption.todayTrackers" = "Трекеры на сегодня";
+"filterOption.completedTrackers" = "Завершенные";
+"filterOption.uncompletedTrackers" = "Не завершенные";
+"label.nothingFound" = "Ничего не найдено";
