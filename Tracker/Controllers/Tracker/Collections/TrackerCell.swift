@@ -21,6 +21,7 @@ final class TrackerCell: UICollectionViewCell {
     
     private var trackerId: UUID?
     private var isPinnedState: Bool = false
+    private var originalContainerBackground: UIColor?
 
 
     private lazy var containerCellView: UIView = {
