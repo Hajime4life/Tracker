@@ -14,7 +14,7 @@ final class TrackerCell: UICollectionViewCell {
     
     weak var delegate: TrackerCellDelegate?
     
-    static let identifier = TrackerCollection.trackerCell.rawValue
+    static let identifier = Identifier.TrackerCollection.trackerCell.rawValue
     
     private var trackerId: UUID?
     

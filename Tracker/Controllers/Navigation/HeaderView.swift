@@ -2,7 +2,7 @@ import UIKit
 
 final class HeaderView: UICollectionReusableView {
     
-    static let identifier = TrackerCollection.headerView.rawValue
+    static let identifier = Identifier.TrackerCollection.headerView.rawValue
 
     // MARK: Private props
     private lazy var titleLabel: UILabel = {

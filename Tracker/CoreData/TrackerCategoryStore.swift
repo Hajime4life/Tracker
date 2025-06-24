@@ -5,6 +5,10 @@ final class TrackerCategoryStore: NSObject {
     // MARK: - Properties
     weak var delegate: TrackerCategoryStoreDelegate?
     
+    var fetchedCategoryTitles: [String] {
+        return fetchedCategories.map { $0.title }
+    }
+    
     var fetchedCategories: [TrackerCategory] {
         guard let objects = fetchedResultsController?.fetchedObjects else {
             return []
@@ -39,6 +43,12 @@ final class TrackerCategoryStore: NSObject {
         setupFetchedResultsController()
     }
     
+    // MARK: - Public Methods
+    
+    func allTitleCategories() -> [String] {
+        return fetchedCategoryTitles
+    }
+    
     // MARK: - Private Methods
     private func setupFetchedResultsController() {
         let request: NSFetchRequest<TrackerCategoryCoreData> = TrackerCategoryCoreData.fetchRequest()
@@ -61,6 +71,12 @@ final class TrackerCategoryStore: NSObject {
         } catch {
             print("[x] Failed to perform fetch for TrackerCategoryCoreData: \(error)")
         }
+    }
+    
+    func createCategory(title: String) throws {
+        let coreData = TrackerCategoryCoreData(context: context)
+        coreData.title = title
+        try context.save()
     }
     
     func addNewTrackerCategoryCoreData(_ trackerCategory: TrackerCategory, for trackerCoreData: TrackerCoreData) throws {

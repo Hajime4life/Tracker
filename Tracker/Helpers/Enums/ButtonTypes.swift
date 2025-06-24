@@ -10,4 +10,5 @@ enum ButtonTypes: String {
     case habit = "Привычка"
     case category = "Категория"
     case schedule = "Расписание"
+    case onBoarding = "Вот это технологии!"
 }
