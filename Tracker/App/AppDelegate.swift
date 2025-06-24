@@ -1,10 +1,16 @@
 import UIKit
 import CoreData
+import YandexMobileMetrica
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        guard let configuration = YMMYandexMetricaConfiguration(apiKey: "2f4a8f4b-cae1-45e8-b6b0-fb3d731e7a62") else {
+            return true
+        }
+        
+        YMMYandexMetrica.activate(with: configuration)
         return true
     }
 
@@ -26,10 +32,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         container.viewContext.automaticallyMergesChangesFromParent = true
         return container
     }()
-
+    
     static var viewContext: NSManagedObjectContext {
         guard let delegate = UIApplication.shared.delegate as? AppDelegate else {
-            fatalError("Unable to get AppDelegate for Core Data")
+            assertionFailure("Unable to get AppDelegate for Core Data")
+            let container = NSPersistentContainer(name: "TrackerModel")
+            return container.viewContext
         }
         return delegate.persistentContainer.viewContext
     }
