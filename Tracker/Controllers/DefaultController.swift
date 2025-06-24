@@ -133,8 +133,8 @@ class DefaultController: UIViewController {
     
     enum ButtonIcons: String {
         case plus = "plus"
-        case trackersTabBar = "trackers"
-        case statisticsTabBar = "hare"
+        case trackersTabBar = "trackers_icon"
+        case statisticsTabBar = "statistics_icon"
         case clearButton = "xmark.circle"
         case checkmark = "checkmark"
         case done = "done"
@@ -203,7 +203,7 @@ class DefaultController: UIViewController {
     }
     
     // MARK: - Public Methods
-    func setCenteredInlineTitle(
+    final func setCenteredInlineTitle(
         title text: DefaultController.NavigationTitles,
         font: UIFont = .systemFont(ofSize: 16, weight: .medium),
         color: UIColor = .ypBlack

@@ -113,9 +113,9 @@ final class NewTrackerViewController: DefaultController {
         super.viewDidLoad()
         setupHelper()
         setupNewTrackerViewController()
+        setupEditTracker()
         updateSaveButtonState()
     }
-    
     // MARK: - Private Methods
     private func setupNewTrackerViewController(){
         if case .habit = mode {
@@ -165,6 +165,20 @@ final class NewTrackerViewController: DefaultController {
         
         setCenteredInlineTitle(title: mode.title)
     }
+    private func setupEditTracker(){
+        if case let .editHabit(tracker, category) = mode {
+            inputTextField.text = tracker.nameTrackers
+            trackerName = tracker.nameTrackers
+            selectedCategory = category
+            categoryButton.setSubtitle(category)
+            selectedEmoji = DefaultController.Emojies(rawValue: tracker.emojiTrackers)
+            selectedColor = tracker.colorTrackers
+            selectedDays = tracker.scheduleTrackers
+            orderedSelectedDays = selectedDays.sorted { $0.rawValue < $1.rawValue }
+            scheduleButton.setSubtitle(selectedDaysString)
+            saveButton.setTitle(DefaultController.TitleButtons.save.text, for: .normal)
+        }
+    }
     
     private func isFormValid() -> Bool {
         guard let name = trackerName, !name.isEmpty,
@@ -210,7 +224,7 @@ final class NewTrackerViewController: DefaultController {
             try store.addNewTracker(tracker, categoryTitle: category)
             delegate?.trackerCreationViewController(self, didCreateTracker: tracker, categoryTitle: category)
         } catch {
-            assertionFailure("❌ Ошибка сохранения трекера: \(error)")
+            assertionFailure("Ошибка сохранения трекера: \(error)")
         }
     }
     

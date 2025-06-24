@@ -117,7 +117,7 @@ final class TrackersViewController: DefaultController {
         configureConstraintsTrackerViewController()
         loadCategories()
         updateCompletedTrackers()
-        updatePlaceholderVisibility(using: categories)
+        updatePlaceholderVisibility()
         
         
     }
@@ -126,7 +126,6 @@ final class TrackersViewController: DefaultController {
         super.viewWillAppear(animated)
         loadCategories()
         updateCompletedTrackers()
-        updatePlaceholderVisibility(using: categories)
     }
     
     // MARK: - Private Methods
@@ -187,7 +186,7 @@ final class TrackersViewController: DefaultController {
         
         let leftItemButton = UIBarButtonItem(customView: createPlusButton)
         navigationItem.leftBarButtonItem = leftItemButton
-        navigationItem.leftBarButtonItem?.tintColor = .black
+       // navigationItem.leftBarButtonItem?.tintColor = .black
         
         let rightItemButton = UIBarButtonItem(customView: dateButton)
         navigationItem.rightBarButtonItem = rightItemButton
@@ -271,6 +270,10 @@ final class TrackersViewController: DefaultController {
         }
         service?.updateCategories(with: categories, footerTitles: newFooters)
     }
+    private func updatePlaceholderVisibility() {
+        let source = isSearching ? filteredCategories : categories
+        updatePlaceholderVisibility(using: source)
+    }
     
     private func updatePlaceholderVisibility(using filteredCategories: [TrackerCategory]){
         let totalTrackers = filteredCategories.reduce(0) { $0 + $1.trackers.count }
@@ -316,7 +319,7 @@ final class TrackersViewController: DefaultController {
     
     private func refreshUI() {
         setupHelper()
-        updatePlaceholderVisibility(using: categories)
+        updatePlaceholderVisibility()
     }
     
     private func updateCompletedTrackers() {
@@ -471,7 +474,7 @@ extension TrackersViewController: TrackerCellDelegate {
         let today = currentDate
         toggleTrackerCompletion(for: id, on: today)
         updateFooters(for: today)
-        updatePlaceholderVisibility(using: categories)
+        updatePlaceholderVisibility()
         
         if let indexPath = trackerCollectionMain.indexPath(for: cell) {
             trackerCollectionMain.reloadItems(at: [indexPath])
@@ -534,7 +537,7 @@ extension TrackersViewController: TrackerCreationViewControllerDelegate {
         }
         newTrackers.append(tracker)
         helper?.updateCategories(with: categories)
-        updatePlaceholderVisibility(using: categories)
+        updatePlaceholderVisibility()
     }
     
     func trackerCreationViewController(_ controller: NewTrackerViewController,
