@@ -1,6 +1,7 @@
 import UIKit
 
 final class MakeSelectCategoryButton: HighlightableButton {
+    
     // MARK: - Props
     private let horizontalPadding: CGFloat = 16
     private let imageRightPadding: CGFloat = 16

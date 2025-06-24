@@ -1,6 +1,7 @@
 import CoreData
 
 final class TrackerStore: NSObject {
+    
     // MARK: - Properties
     weak var delegate: TrackerStoreDelegate?
     

@@ -41,6 +41,49 @@ class DefaultController: UIViewController {
         static var names: [String] { allCases.map { $0.rawValue } }
     }
     
+    enum ImageNames: String {
+        case dizzy = "dizzy"
+        var imageName: String { rawValue }
+    }
+    
+    enum Labels: String {
+        case dizzyLabel = "Что будем отслеживать?"
+        case searchPlaceholder = "Поиск"
+        case categoryDizzyLabel =
+        """
+        Привычки и события можно
+        объединить по смыслу
+        """
+        
+        var text: String { rawValue }
+    }
+    
+    enum ButtonIcons: String {
+        case plus = "plus"
+        case trackersTabBar = "trackers"
+        case statisticsTabBar = "hare"
+        case clearButton = "xmark.circle"
+        case checkmark = "checkmark"
+        
+        var imageName: String { rawValue }
+    }
+    
+    enum OnboardingImage: String, CaseIterable{
+        case onBoardingBlue = "onBoardingBlue"
+        case onBoardingRed = "onBoardingRed"
+        
+        static var allCasesImage: [OnboardingImage] { allCases }
+        static var allImageNames: [String] { allCases.map { $0.imageName } }
+        
+        var imageName: String { rawValue }
+    }
+    
+    enum OnBoardingLabel: String {
+        case onBoardingBlue = "Отслеживайте только то, что хотите"
+        case onBoardingRed = "Даже если это не литры воды и йога"
+        var text: String { rawValue }
+    }
+    
     // MARK: - Overrides
     override func viewDidLoad() {
         super.viewDidLoad()

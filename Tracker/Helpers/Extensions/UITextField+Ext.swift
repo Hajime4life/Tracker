@@ -8,7 +8,7 @@ extension UITextField {
         placeholderColor: UIColor = .ypGray,
         height: CGFloat = 0,
         cornerRadius: CGFloat = 16,
-        clearButtonImage: UIImage? = UIImage(systemName: "xmark.circle.fill"),
+        clearButtonImage: UIImage? = UIImage(systemName: DefaultController.ButtonIcons.clearButton.imageName),
         target: Any? = nil,
         action: Selector? = nil
     ) -> UITextField {
