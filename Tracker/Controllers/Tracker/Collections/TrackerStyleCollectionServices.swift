@@ -99,11 +99,12 @@ extension TrackerStyleCollectionServices: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
         let toDeselect = collectionView.indexPathsForSelectedItems?
             .filter { $0.section == indexPath.section && $0 != indexPath } ?? []
-        toDeselect.forEach { collectionView.deselectItem(at: $0, animated: false) }
+        toDeselect.forEach{collectionView.deselectItem(at: $0, animated: false)}
         
-        let item = sections[indexPath.section].items[indexPath.item]
+        let item  = sections[indexPath.section].items[indexPath.item]
         switch item {
             case .emoji(let emoji):
                 selectedEmoji = emoji
@@ -112,7 +113,9 @@ extension TrackerStyleCollectionServices: UICollectionViewDelegateFlowLayout {
         }
         
         if let emoji = selectedEmoji, let color = selectedColor {
-            cellDelegate?.trackerStyleCollectionServices(self, didSelectEmoji: emoji, andColor: color)
+            cellDelegate?.trackerStyleCollectionServices(self,
+                                                         didSelectEmoji: emoji,
+                                                         andColor: color)
         }
     }
     

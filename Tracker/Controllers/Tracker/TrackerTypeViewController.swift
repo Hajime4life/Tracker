@@ -3,9 +3,9 @@ import UIKit
 final class TrackerTypeViewController: DefaultController {
     
     // MARK: - Props
-    weak var habitDelegate: NewHabitViewControllerDelegate?
+    weak var habitDelegate: TrackerCreationViewControllerDelegate?
     
-    private lazy var habitButton = DefaultButton(title: ButtonTypes.habit,
+    private lazy var habitButton = DefaultButton(title: .habit,
                                               target: self,
                                               action: #selector(tapHabitButton))
     

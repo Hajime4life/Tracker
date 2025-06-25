@@ -442,19 +442,6 @@ extension TrackersViewController: UISearchResultsUpdating {
     }
 }
 
-// MARK: - NewHabitViewControllerDelegate
-extension TrackersViewController: NewHabitViewControllerDelegate {
-    func newHabitViewController(_ controller: NewHabitViewController, didCreateTracker tracker: Tracker, categoryTitle: String) {
-        do {
-            try store.addNewTracker(tracker, categoryTitle: categoryTitle)
-            newTrackers.append(tracker)
-            loadCategories()
-        } catch {
-            print("[x] Ошибка при сохранении трекера: \(error)")
-        }
-    }
-}
-
 // MARK: - TrackerCellDelegate
 extension TrackersViewController: TrackerCellDelegate {
     func didTogglePin(trackerId: UUID) {
@@ -540,21 +527,21 @@ extension TrackersViewController: TrackerStoreDelegate {
     }
 }
 
-// MARK: - TrackerCategoryStoreDelegate
+// MARK: - TrackersCategoryStoreDelegate
 extension TrackersViewController: TrackerCategoryStoreDelegate {
     func store(_ store: TrackerCategoryStore, didUpdate update: TrackerCategoryStoreUpdateModel) {
         DispatchQueue.main.async { self.loadCategories() }
     }
 }
 
-// MARK: - TrackerRecordStoreDelegate
+// MARK: - TrackersRecordStoreDelegate
 extension TrackersViewController: TrackerRecordStoreDelegate {
     func store(_ store: TrackerRecordStore, didUpdate update: TrackerRecordStoreUpdateModel) {
         DispatchQueue.main.async { self.updateCompletedTrackers() }
     }
 }
 
-// MARK: TrackerCreationViewControllerDelegate
+// MARK: TrackersCreationViewControllerDelegate
 extension TrackersViewController: TrackerCreationViewControllerDelegate {
     
     func trackerCreationViewController(_ controller: NewTrackerViewController, didCreateTracker tracker: Tracker,
@@ -595,16 +582,3 @@ extension TrackersViewController: UISearchBarDelegate {
     }
 }
 
-enum TrackerCreationMode {
-    case habit
-    case event
-    case editHabit(trackerToEdit: Tracker, categoryToEdit: String)
-    
-    var title: DefaultController.NavigationTitles {
-        switch self {
-            case .habit:  return .newHabit
-            case .event:  return .newEvents
-            case .editHabit: return .editHabit
-        }
-    }
-}

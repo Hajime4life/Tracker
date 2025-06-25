@@ -5,7 +5,7 @@ final class NewTrackerViewController: DefaultController {
     weak var delegate: TrackerCreationViewControllerDelegate?
     
     private let store = TrackerStore()
-    private let mode: TrackerCreateType
+    private let mode: TrackerCreationMode
     
     private var selectedDays: Set<WeekDay> = [] {
         didSet {
@@ -94,12 +94,11 @@ final class NewTrackerViewController: DefaultController {
         layout.estimatedItemSize = .zero
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.backgroundColor = .lightGray
         return collectionView
     }()
     
     // MARK: - Init
-    init(mode: TrackerCreateType) {
+    init(mode: TrackerCreationMode) {
         self.mode = mode
         super.init(nibName: nil, bundle: nil)
     }
@@ -321,19 +320,5 @@ extension NewTrackerViewController: TrackerStyleCellDelegate {
     }
 }
 
-// MARK: Enums
-enum TrackerCreateType {
-    case habit
-    case event
-    case editHabit(trackerToEdit: Tracker, categoryToEdit: String)
-    
-    var title: DefaultController.NavigationTitles {
-        switch self {
-            case .habit: return .newHabit
-            case .event: return .newEvents
-            case .editHabit: return .editHabit
-        }
-    }
-}
 
 
