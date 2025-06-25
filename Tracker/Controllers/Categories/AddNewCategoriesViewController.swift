@@ -85,7 +85,7 @@ final class AddNewCategoriesViewController: DefaultController {
             try categoryStore.createCategory(title: newCategoryText)
             dismiss(animated: true)
         } catch {
-            assertionFailure("❌ Ошибка создания категории: \(error)")
+            assertionFailure("[x] Ошибка создания категории: \(error)")
         }
     }
 }

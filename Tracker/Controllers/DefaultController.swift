@@ -2,19 +2,47 @@ import UIKit
 
 class DefaultController: UIViewController {
     
-    // MARK: - Public Props
+    // MARK: - Enums
     enum NavigationTitles: String {
-        case createTracker = "Создание трекера"
-        case newHabit = "Новая привычка"
-        case createHabit = "Создание привычки"
-        case editHabit = "Редактирование привычки"
-        case category = "Категория"
-        case newCategory = "Новая категория"
-        case editCategory = "Редактирование категории"
-        case schedule = "Расписание"
-        case filters = "Фильтры"
-        case tracker = "Трекеры"
-        case newEvents = "Новое нерегулярное событие"
+        case createTracker = "screen.createTracker"
+        case newHabit = "screen.newHabit"
+        case createHabit = "screen.createHabit"
+        case editHabit = "screen.editHabit"
+        case category = "screen.category"
+        case newCategory = "screen.newCategory"
+        case editCategory = "screen.editCategory"
+        case schedule = "screen.schedule"
+        case filters = "screen.filters"
+        case tracker = "screen.tracker"
+        case newEvents = "screen.newEvents"
+        
+        var text: String {
+            NSLocalizedString(self.rawValue, comment: "")
+        }
+    }
+    
+    enum TitleTabBarItem: String {
+        case trackers = "tab.trackers"
+        case statistics = "tab.statistics"
+        
+        var text: String {
+            NSLocalizedString(self.rawValue, comment: "")
+        }
+    }
+
+    enum FilterOption: String, CaseIterable {
+        case allTrackers = "filterOption.allTrackers"
+        case todayTrackers = "filterOption.todayTrackers"
+        case completed = "filterOption.completedTrackers"
+        case uncompleted = "filterOption.uncompletedTrackers"
+        
+        var text: String {
+            NSLocalizedString(self.rawValue, comment: "")
+        }
+        
+        static var allOptions: [String] {
+            allCases.map { $0.text }
+        }
     }
     
     enum Emojies: String, CaseIterable {
@@ -37,33 +65,79 @@ class DefaultController: UIViewController {
         case emojiIsland = "island"
         case emojiSleepy = "sleepy"
         
+        var symbol: String {
+            switch self {
+                case .emojiSmile: return "🙂"
+                case .emojiCatHeartEyes: return "😻"
+                case .emojiHibiscus: return "🌺"
+                case .emojiDog: return "🐶"
+                case .emojiHeart: return "❤️"
+                case .emojiScream: return "😱"
+                case .emojiAngel: return "😇"
+                case .emojiAngry: return "😠"
+                case .emojiColdFace: return "🥶"
+                case .emojiThinking: return "🤔"
+                case .emojiRaisedHands: return "🙌"
+                case .emojiBurger: return "🍔"
+                case .emojiBroccoli: return "🥦"
+                case .emojiTableTennis: return "🏓"
+                case .emojiGoldMedal: return "🥇"
+                case .emojiGuitar: return "🎸"
+                case .emojiIsland: return "🏝"
+                case .emojiSleepy: return "😴"
+            }
+        }
+        
         static var list: [Emojies] { allCases }
         static var names: [String] { allCases.map { $0.rawValue } }
+        var imageName: String { rawValue }
     }
     
     enum ImageNames: String {
         case dizzy = "dizzy"
+        case placeholderStatistic = "placeholderStatistic"
+        case filter = "resultErrors"
+        case pinIndicator = "pinSquare"
+        
         var imageName: String { rawValue }
     }
     
     enum Labels: String {
-        case dizzyLabel = "Что будем отслеживать?"
-        case searchPlaceholder = "Поиск"
-        case categoryDizzyLabel =
-        """
-        Привычки и события можно
-        объединить по смыслу
-        """
+        case dizzyLabel = "label.emptyState"
+        case searchPlaceholder = "label.searchPlaceholder"
+        case categoryDizzyLabel = "label.categoryDizzyLabel"
+        case nothingFound = "label.nothingFound"
         
-        var text: String { rawValue }
+        var text: String {
+            NSLocalizedString(self.rawValue, comment: "")
+        }
+    }
+    
+    enum TitleButtons: String {
+        case addCategory = "button.addCategory"
+        case create = "button.create"
+        case done = "button.done"
+        case cancel = "button.cancel"
+        case filters = "button.filters"
+        case irregularEvent = "button.irregularEvent"
+        case habit = "button.habit"
+        case category = "button.category"
+        case schedule = "button.schedule"
+        case onBoarding = "button.onBoarding"
+        case save = "button.save"
+        
+        var text: String {
+            NSLocalizedString(self.rawValue, comment: "")
+        }
     }
     
     enum ButtonIcons: String {
         case plus = "plus"
-        case trackersTabBar = "trackers"
-        case statisticsTabBar = "hare"
+        case trackersTabBar = "trackers_icon"
+        case statisticsTabBar = "statistics_icon"
         case clearButton = "xmark.circle"
         case checkmark = "checkmark"
+        case done = "done"
         
         var imageName: String { rawValue }
     }
@@ -79,20 +153,58 @@ class DefaultController: UIViewController {
     }
     
     enum OnBoardingLabel: String {
-        case onBoardingBlue = "Отслеживайте только то, что хотите"
-        case onBoardingRed = "Даже если это не литры воды и йога"
-        var text: String { rawValue }
+        case onBoardingBlue = "label.onBoardingBlue"
+        case onBoardingRed = "label.onBoardingRed"
+        
+        var text: String {
+            NSLocalizedString(self.rawValue, comment: "")
+        }
     }
     
+    enum TitleStatistic: String {
+        case bestPeriod = "titleStatistic.bestPeriod"
+        case bestDays = "titleStatistic.bestDays"
+        case endTrackers = "titleStatistic.endTrackers"
+        case averageValue = "titleStatistic.averageValue"
+        
+        case titlePlaceholder = "titleStatistic.placeholder"
+        
+        var text: String {
+            NSLocalizedString(self.rawValue, comment: "")
+        }
+    }
+    
+    enum Alert: String {
+        case deleteTitle = "alert.delete.title"
+        case deleteConfirm = "alert.delete.confirm"
+        case deleteCancel = "alert.delete.cancel"
+        case actionUnpin = "action.unpin";
+        case actionPin = "action.pin";
+        case actionEdit = "action.edit";
+        
+        var text: String {
+            NSLocalizedString(self.rawValue, comment: "")
+        }
+    }
+    
+    enum Pinned: String {
+        case isPinned = "title.isPinned"
+        
+        var text: String {
+            NSLocalizedString(self.rawValue, comment: "")
+        }
+    }
+    
+    
     // MARK: - Overrides
-    override func viewDidLoad() {
+    override func viewDidLoad(){
         super.viewDidLoad()
         configureViewController()
     }
     
     // MARK: - Public Methods
-    func setCenteredInlineTitle(
-        title text: NavigationTitles,
+    final func setCenteredInlineTitle(
+        title text: DefaultController.NavigationTitles,
         font: UIFont = .systemFont(ofSize: 16, weight: .medium),
         color: UIColor = .ypBlack
     ) {
@@ -100,7 +212,7 @@ class DefaultController: UIViewController {
         navigationItem.largeTitleDisplayMode = .never
         
         let label = UILabel()
-        label.text = text.rawValue
+        label.text = text.text
         label.font = font
         label.textColor = color
         label.textAlignment = .center
@@ -108,18 +220,7 @@ class DefaultController: UIViewController {
         navigationItem.titleView = label
     }
     
-    func presentPageSheet(
-        viewController: UIViewController,
-        animated: Bool = true,
-        transitionStyle: UIModalTransitionStyle = .coverVertical
-    ) {
-        let nav = UINavigationController(rootViewController: viewController)
-        nav.modalPresentationStyle = .pageSheet
-        nav.modalTransitionStyle = transitionStyle
-        present(nav, animated: animated)
-    }
-    
-    func dismissToRootModal(animated: Bool = true, completion: (() -> Void)? = nil) {
+    final func dismissToRootModal(animated: Bool = true, completion: (() -> Void)? = nil) {
         var rootVC = presentingViewController
         while let parent = rootVC?.presentingViewController {
             rootVC = parent
@@ -130,6 +231,7 @@ class DefaultController: UIViewController {
     // MARK: - Private Methods
     private func configureViewController() {
         view.backgroundColor = .ypWhite
+        view.backgroundColor = .systemBackground
         hideKeyboardOnTap()
     }
     

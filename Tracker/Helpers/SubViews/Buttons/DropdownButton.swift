@@ -1,9 +1,7 @@
 import UIKit
 
 final class DropdownButton: HighlightableButton {
-    
-    // MARK: - Props
-    
+    //MARK: - Private variables
     private lazy var label = UILabel()
     private lazy var chevron = UIImageView()
     private lazy var contentStack = UIStackView()
@@ -20,10 +18,9 @@ final class DropdownButton: HighlightableButton {
         return label
     }()
     
-    // MARK: - Init's
-    
+    // MARK: - Init
     init(
-        title: ButtonTypes,
+        title: DefaultController.TitleButtons,
         font: UIFont = .systemFont(ofSize: 17, weight: .regular),
         titleColor: UIColor = .ypBlack,
         backgroundColor: UIColor = .ypBackGray,
@@ -37,28 +34,18 @@ final class DropdownButton: HighlightableButton {
     ) {
         super.init(frame: .zero)
         setupAppearance( backgroundColor: backgroundColor,height: height, cornerRadius: cornerRadius)
-        setupContentStack(title: title.rawValue, font: font, titleColor: titleColor, imageName: image, spacing: spacing)
+        setupContentStack(title: title.text,font: font,titleColor: titleColor,imageName: image,spacing: spacing)
         setupConstraints(horizontalInset: horizontalInset)
         setupTarget(target: target, action: action)
     }
-    
-    @available(*, unavailable)
-    required init?(coder: NSCoder) {
-        assertionFailure("init(coder:) has not been implemented")
-        return nil
-    }
-    
-    // MARK: - Override's
-    
+    // MARK: - Override Methods
     override func setTitleColor(_ color: UIColor?, for state: UIControl.State) {
         super.setTitleColor(color, for: state)
         label.textColor = color
         chevron.tintColor = color
     }
     
-    
     // MARK: - Private Methods
-    
     private func setupAppearance(backgroundColor: UIColor, height: CGFloat, cornerRadius: CGFloat ) {
         self.backgroundColor = backgroundColor
         self.layer.cornerRadius = cornerRadius
@@ -122,5 +109,10 @@ final class DropdownButton: HighlightableButton {
         secondaryLabel.text = text
     }
     
-
+    // MARK: - required
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        assertionFailure("init(coder:) has not been implemented")
+        return nil
+    }
 }

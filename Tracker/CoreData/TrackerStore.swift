@@ -92,27 +92,7 @@ final class TrackerStore: NSObject {
     func fetchTrackerCoreData(by id: UUID) -> TrackerCoreData? {
         let req: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
         req.predicate = NSPredicate(format: "idTrackers == %@", id as CVarArg)
-        
-        // Выводим все трекеры для отладки
-        let allTrackersReq: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
-        do {
-            let allTrackers = try context.fetch(allTrackersReq)
-            let trackerInfo = allTrackers.map { tracker in
-                "ID: \(tracker.idTrackers?.uuidString ?? "nil"), Name: \(tracker)"
-            }
-            print("[TS-DEBUG] All trackers in Core Data: \(trackerInfo)")
-        } catch {
-            print("[TS-DEBUG] Error fetching all trackers: \(error)")
-        }
-        
-        do {
-            let result = try context.fetch(req).first
-            print("[TS-DEBUG] Fetching tracker with ID: \(id), found: \(result != nil ? "yes" : "no")")
-            return result
-        } catch {
-            print("[TS-DEBUG] Error fetching tracker: \(error)")
-            return nil
-        }
+        return (try? context.fetch(req))?.first
     }
     
     func decodeTracker(from trackerCoreData: TrackerCoreData) throws -> Tracker {
@@ -135,23 +115,59 @@ final class TrackerStore: NSObject {
         guard let scheduleTrackers = scheduleRaw as? Set<WeekDay> else {
             throw TrackerStoreException.decodingErrorInvalidScheduleTrackers
         }
+        let isPinned = trackerCoreData.isPinned
         
         return Tracker(
             idTrackers: idTrackers,
             nameTrackers: nameTrackers,
             colorTrackers: uiColorMarshalling.color(from: colorTrackers),
             emojiTrackers: emojiTrackers,
-            scheduleTrackers: scheduleTrackers
+            scheduleTrackers: scheduleTrackers,
+            isPinned: isPinned
         )
+    }
+    func updateTracker(_ tracker: Tracker, newCategoryTitle: String? = nil) throws {
+        guard let core = fetchTrackerCoreData(by: tracker.idTrackers) else {
+            throw TrackerStoreException.decodingErrorInvalidIdTrackers
+        }
+        
+        updateTrackerCoreData(core, with: tracker)
+        
+        if let newCat = newCategoryTitle {
+            let req: NSFetchRequest<TrackerCategoryCoreData> = TrackerCategoryCoreData.fetchRequest()
+            req.predicate = NSPredicate(format: "title == %@", newCat)
+            let categoryCore: TrackerCategoryCoreData
+            if let exist = try context.fetch(req).first {
+                categoryCore = exist
+            } else {
+                categoryCore = TrackerCategoryCoreData(context: context)
+                categoryCore.title = newCat
+            }
+            core.trackerCategory = categoryCore
+        }
+        try context.save()
+    }
+    
+    func deleteTracker(withId id: UUID) throws {
+        guard let trackerCore = fetchTrackerCoreData(by: id) else { return }
+        context.delete(trackerCore)
+        try context.save()
+    }
+    
+    func togglePin(trackerId: UUID) throws {
+        guard let trackerCore = fetchTrackerCoreData(by: trackerId) else { return }
+        trackerCore.isPinned.toggle()
+        try context.save()
     }
     
     // MARK: - Private Methods
-    private func updateTrackerCoreData(_ trackerCoreData: TrackerCoreData, with mix: Tracker) {
+    private func updateTrackerCoreData(_ trackerCoreData: TrackerCoreData, with mix: Tracker){
         trackerCoreData.idTrackers = mix.idTrackers
         trackerCoreData.nameTrackers = mix.nameTrackers
         trackerCoreData.colorTrackers = uiColorMarshalling.hexString(from: mix.colorTrackers)
         trackerCoreData.emojiTrackers = mix.emojiTrackers
         trackerCoreData.scheduleTrackers = mix.scheduleTrackers as NSSet
+        trackerCoreData.isPinned = mix.isPinned
     }
 }
 

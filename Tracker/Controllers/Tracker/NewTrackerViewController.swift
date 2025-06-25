@@ -5,7 +5,7 @@ final class NewTrackerViewController: DefaultController {
     weak var delegate: TrackerCreationViewControllerDelegate?
     
     private let store = TrackerStore()
-    private let mode: TrackerCreateType
+    private let mode: TrackerCreationMode
     
     private var selectedDays: Set<WeekDay> = [] {
         didSet {
@@ -94,12 +94,11 @@ final class NewTrackerViewController: DefaultController {
         layout.estimatedItemSize = .zero
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.backgroundColor = .lightGray
         return collectionView
     }()
     
     // MARK: - Init
-    init(mode: TrackerCreateType) {
+    init(mode: TrackerCreationMode) {
         self.mode = mode
         super.init(nibName: nil, bundle: nil)
     }
@@ -113,40 +112,71 @@ final class NewTrackerViewController: DefaultController {
         super.viewDidLoad()
         setupHelper()
         setupNewTrackerViewController()
+        setupEditTracker()
         updateSaveButtonState()
     }
-    
     // MARK: - Private Methods
-    private func setupNewTrackerViewController() {
-        if mode == .habit {
-            view.setSubviews([inputTextField, buttonStackView, bottomButtonsStackView, styleCollectionView])
+    private func setupNewTrackerViewController(){
+        if case .habit = mode {
+            view.setSubviews([inputTextField,buttonStackView, bottomButtonsStackView,styleCollectionView])
             [inputTextField, buttonStackView, bottomButtonsStackView].hideMask()
+            
+            NSLayoutConstraint.activate([
+                inputTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+                inputTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+                inputTextField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
+                
+                buttonStackView.topAnchor.constraint(equalTo: inputTextField.bottomAnchor, constant: 24),
+                buttonStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+                buttonStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+                
+                bottomButtonsStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,
+                                                                constant: 20),
+                bottomButtonsStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
+                                                                 constant: -20),
+                bottomButtonsStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+                
+                styleCollectionView.topAnchor.constraint(equalTo: buttonStackView.bottomAnchor, constant: 16),
+                styleCollectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+                styleCollectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+                styleCollectionView.bottomAnchor.constraint(equalTo: bottomButtonsStackView.topAnchor, constant: -16)
+            ])
         } else {
             view.setSubviews([topButtonsStackView, bottomButtonsStackView, styleCollectionView])
             [topButtonsStackView, bottomButtonsStackView].hideMask()
+            NSLayoutConstraint.activate([
+                topButtonsStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
+                topButtonsStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+                topButtonsStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+                
+                bottomButtonsStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,
+                                                                constant: 20),
+                bottomButtonsStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
+                                                                 constant: -20),
+                bottomButtonsStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+                
+                styleCollectionView.topAnchor.constraint(equalTo: topButtonsStackView.bottomAnchor, constant: 16),
+                styleCollectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+                styleCollectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+                styleCollectionView.bottomAnchor.constraint(equalTo: bottomButtonsStackView.topAnchor, constant: -16)
+            ])
         }
         
-        NSLayoutConstraint.activate([
-            (mode == .habit ? inputTextField : topButtonsStackView).topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
-            (mode == .habit ? inputTextField : topButtonsStackView).leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            (mode == .habit ? inputTextField : topButtonsStackView).trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-            
-            (mode == .habit ? buttonStackView : topButtonsStackView).topAnchor.constraint(equalTo: (mode == .habit ? inputTextField : topButtonsStackView).bottomAnchor, constant: 24),
-            (mode == .habit ? buttonStackView : topButtonsStackView).leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            (mode == .habit ? buttonStackView : topButtonsStackView).trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-            
-            bottomButtonsStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
-            bottomButtonsStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
-            bottomButtonsStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            
-            styleCollectionView.topAnchor.constraint(equalTo: (mode == .habit ? buttonStackView : topButtonsStackView).bottomAnchor, constant: 32),
-            styleCollectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            styleCollectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            styleCollectionView.bottomAnchor.constraint(equalTo: bottomButtonsStackView.topAnchor, constant: -16)
-        ])
-        
-        styleCollectionView.isHidden = false
         setCenteredInlineTitle(title: mode.title)
+    }
+    private func setupEditTracker(){
+        if case let .editHabit(tracker, category) = mode {
+            inputTextField.text = tracker.nameTrackers
+            trackerName = tracker.nameTrackers
+            selectedCategory = category
+            categoryButton.setSubtitle(category)
+            selectedEmoji = DefaultController.Emojies(rawValue: tracker.emojiTrackers)
+            selectedColor = tracker.colorTrackers
+            selectedDays = tracker.scheduleTrackers
+            orderedSelectedDays = selectedDays.sorted { $0.rawValue < $1.rawValue }
+            scheduleButton.setSubtitle(selectedDaysString)
+            saveButton.setTitle(DefaultController.TitleButtons.save.text, for: .normal)
+        }
     }
     
     private func isFormValid() -> Bool {
@@ -156,7 +186,12 @@ final class NewTrackerViewController: DefaultController {
               selectedColor != nil
         else { return false }
         
-        return mode == .event || !selectedDays.isEmpty
+        switch mode {
+            case .event:
+                return true
+            default:
+                return !selectedDays.isEmpty
+        }
     }
     
     private func updateSaveButtonState() {
@@ -172,27 +207,24 @@ final class NewTrackerViewController: DefaultController {
     }
     
     private func makeAndSaveTracker(name: String, category: String, days: Set<WeekDay>) {
-            guard let emoji = selectedEmoji,
-                  let color = selectedColor
-            else {
-                print("[+] Ошибка создания трекера: не вбран эмодзи или цвет")
-                return
-            }
-            
-            let tracker = Tracker(
-                nameTrackers: name,
-                colorTrackers: color,
-                emojiTrackers: emoji.rawValue,
-                scheduleTrackers: days
-            )
-            
-            do {
-                try store.addNewTracker(tracker, categoryTitle: category)
-                print("[+] Получен трекер с id: \(tracker.idTrackers)")
-                delegate?.trackerCreationViewController(self, didCreateTracker: tracker, categoryTitle: category)
-            } catch {
-                print("[-] Ошибка сохранения трекера: \(error.localizedDescription)")
-            }
+        guard let emoji = selectedEmoji,
+              let color = selectedColor
+        else { return }
+        
+        let tracker = Tracker(
+            nameTrackers: name,
+            colorTrackers: color,
+            emojiTrackers: emoji.rawValue,
+            scheduleTrackers: days,
+            isPinned: false
+        )
+        
+        do {
+            try store.addNewTracker(tracker, categoryTitle: category)
+            delegate?.trackerCreationViewController(self, didCreateTracker: tracker, categoryTitle: category)
+        } catch {
+            assertionFailure("Ошибка сохранения трекера: \(error)")
+        }
     }
     
     // MARK: - Actions
@@ -220,33 +252,40 @@ final class NewTrackerViewController: DefaultController {
     }
     
     @objc private func didTapSaveButton() {
-        guard let name = trackerName, !name.isEmpty,
-              let category = selectedCategory
-        else {
-            print("[x] Validation failed: name=\(String(describing: trackerName)), category=\(String(describing: selectedCategory))")
-            return
+        guard let name = trackerName,
+              !name.isEmpty,
+              let category = selectedCategory,
+              let selectedColor = selectedColor,
+              let selectedEmoji = selectedEmoji
+        else { return }
+        
+        let days: Set<WeekDay>
+        
+        switch mode {
+            case .habit, .editHabit:
+                days = selectedDays
+            case .event:
+                days = [WeekDay.current]
         }
         
-        let days = mode == .habit ? selectedDays : [WeekDay.current]
-        guard !days.isEmpty else {
-            print("[x] Validation failed: no days selected")
-            return
-        }
+        guard !days.isEmpty else { return }
         
-        makeAndSaveTracker(name: name, category: category, days: days)
-        dismissToRootModal()
-    }
-}
-
-// MARK: Enums
-enum TrackerCreateType {
-    case habit
-    case event
-    
-    var title: DefaultController.NavigationTitles {
-        switch self {
-            case .habit: return .newHabit
-            case .event: return .newEvents
+        if case let .editHabit(original, oldCategory) = mode {
+            let updated = Tracker(
+                idTrackers: original.idTrackers,
+                nameTrackers: name,
+                colorTrackers: selectedColor,
+                emojiTrackers: selectedEmoji.rawValue,
+                scheduleTrackers: days,
+                isPinned: original.isPinned
+            )
+            
+            try? store.updateTracker(updated, newCategoryTitle: category)
+            delegate?.trackerCreationViewController(self, didEditTracker: updated, oldCategory: oldCategory)
+            dismissToRootModal()
+        } else {
+            makeAndSaveTracker(name: name, category: category, days: days)
+            dismissToRootModal()
         }
     }
 }
@@ -280,3 +319,6 @@ extension NewTrackerViewController: TrackerStyleCellDelegate {
         updateSaveButtonState()
     }
 }
+
+
+

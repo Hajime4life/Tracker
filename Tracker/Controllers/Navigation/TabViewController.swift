@@ -3,28 +3,18 @@ import UIKit
 final class TabBarController: UITabBarController {
 
     // MARK: - Private Props
-    private enum TabBarTitle: String {
-        case trackers = "Трекеры"
-        case statistics = "Статистика"
-    }
-    
-    private enum TabIcons: String {
-        case trackersTabBar = "trackers_icon"
-        case statisticsTabBar = "statistics_icon"
-    }
-    
     private enum Tab: Int {
         case trackers = 0
         case statistics = 1
         
-        var title: TabBarTitle {
+        var title: DefaultController.TitleTabBarItem {
             switch self {
                 case .trackers: return .trackers
                 case .statistics: return .statistics
             }
         }
         
-        var icons: TabIcons {
+        var imageName: DefaultController.ButtonIcons {
             switch self {
                 case .trackers: return .trackersTabBar
                 case .statistics: return .statisticsTabBar
@@ -44,7 +34,6 @@ final class TabBarController: UITabBarController {
     // MARK: - Overrides
     override func viewDidLoad() {
         super.viewDidLoad()
-        overrideUserInterfaceStyle = .light
         viewControllers = [
             setTab(for: .trackers),
             setTab(for: .statistics)
@@ -53,15 +42,24 @@ final class TabBarController: UITabBarController {
         setupTabBar()
     }
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        setupTabBar()
+    }
+    
     // MARK: Private Methods
     private func setupTabBar() {
+        view.backgroundColor = .systemBackground
         tabBar.isTranslucent = false
-        tabBar.layer.borderWidth = 0.5
-        tabBar.layer.masksToBounds = true
-        view.backgroundColor = .ypWhite
         tabBar.tintColor = .ypBlue
         tabBar.unselectedItemTintColor = .ypGray
-        tabBar.layer.borderColor = UIColor.ypGray.cgColor
+        if traitCollection.userInterfaceStyle == .dark {
+            tabBar.layer.borderWidth = 0
+        } else {
+            tabBar.layer.borderColor = UIColor.ypGray.cgColor
+            tabBar.layer.borderWidth = 0.5
+        }
+        tabBar.layer.masksToBounds = true
     }
     
     private func setTab(for tab: Tab) -> UINavigationController {
@@ -69,9 +67,9 @@ final class TabBarController: UITabBarController {
         let navigationController = UINavigationController(rootViewController: viewController)
         
         navigationController.tabBarItem = UITabBarItem(
-            title: tab.title.rawValue,
-            image: UIImage(named: tab.icons.rawValue),
-            selectedImage: UIImage(named: tab.icons.rawValue)
+            title: tab.title.text,
+            image: UIImage(named: tab.imageName.imageName),
+            selectedImage: UIImage(named: tab.imageName.imageName)
         )
         
         navigationController.tabBarItem.tag = tab.rawValue
