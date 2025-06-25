@@ -18,7 +18,8 @@ final class EventsViewController: DefaultController {
                                                target: self,
                                                action: #selector(didTapCancelButton))
     
-    private lazy var saveButton = DefaultButton(title: .create, backgroundColor: .ypGray,
+    private lazy var saveButton = DefaultButton(title: .create,
+                                             backgroundColor: .ypGray,
                                              titleColor:.ypWhite,
                                              target: self,
                                              action: #selector(didTapSaveButton))

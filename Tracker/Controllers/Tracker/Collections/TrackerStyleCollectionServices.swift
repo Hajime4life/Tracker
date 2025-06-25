@@ -23,12 +23,13 @@ final class TrackerStyleCollectionServices: NSObject {
     private var selectedEmoji: DefaultController.Emojies?
     private var selectedColor: UIColor?
     
-    //MARK: - init
+    // MARK: - init
     init(
         paramsStyleCell: GeometricParams,
         collection: UICollectionView,
         cellDelegate: TrackerStyleCellDelegate
-    ) {
+    )
+    {
         self.paramsStyleCell = paramsStyleCell
         self.collection = collection
         self.cellDelegate = cellDelegate
@@ -36,11 +37,11 @@ final class TrackerStyleCollectionServices: NSObject {
         
         sections = [
             .init(
-                title: "Emoji",
+                title: NSLocalizedString("title.emoji", comment: ""),
                 items: DefaultController.Emojies.allCases.map { .emoji($0) }
             ),
             .init(
-                title: "Цвет",
+                title: NSLocalizedString("title.color", comment: ""),
                 items: UIColor.trackerCellColors.map { .color($0) }
             )
         ]
@@ -50,11 +51,10 @@ final class TrackerStyleCollectionServices: NSObject {
         collection.delegate = self
         collection.dataSource = self
         collection.allowsMultipleSelection = true
-        collection.backgroundColor = .clear
         collection.reloadData()
     }
     
-    private func registrationElements() {
+    private func registrationElements(){
         guard let collection = collection else { return }
         collection.register(TrackerStyleCell.self, forCellWithReuseIdentifier: TrackerStyleCell.identifier)
         collection.register(HeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
@@ -124,6 +124,7 @@ extension TrackerStyleCollectionServices: UICollectionViewDelegateFlowLayout {
 
 //MARK: - UICollectionViewDataSource
 extension TrackerStyleCollectionServices: UICollectionViewDataSource {
+    
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         sections.count
     }
@@ -133,41 +134,31 @@ extension TrackerStyleCollectionServices: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        _ = sections[indexPath.section]
         let styleItem = sections[indexPath.section].items[indexPath.item]
         
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TrackerStyleCell.identifier,
-                                                            for: indexPath) as? TrackerStyleCell else { return UICollectionViewCell() }
+                                                            for: indexPath)
+                as? TrackerStyleCell else { return UICollectionViewCell()}
         
         switch styleItem {
             case .emoji(let emoji):
                 cell.configureStyleCell(with: emoji, color: .clear)
-                if emoji == selectedEmoji {
-                    cell.isSelected = true
-                } else {
-                    cell.isSelected = false
-                    cell.backgroundColor = .clear
-                }
             case .color(let color):
                 cell.configureStyleCell(with: nil, color: color)
-            if color == selectedColor {
-                cell.isSelected = true
-                cell.backgroundColor = color.withAlphaComponent(0.3)
-            } else {
-                cell.isSelected = false
-                cell.backgroundColor = .clear
-            }
         }
         return cell
     }
     
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String,
+    func collectionView(_ collectionView: UICollectionView,viewForSupplementaryElementOfKind kind: String,
                         at indexPath: IndexPath) -> UICollectionReusableView {
         guard let header = collectionView.dequeueReusableSupplementaryView(
             ofKind: kind,
             withReuseIdentifier: HeaderView.identifier,
             for: indexPath
-        ) as? HeaderView else { return UICollectionReusableView() }
-        
+        ) as? HeaderView else {
+            return UICollectionReusableView()
+        }
         header.setupTitleHeader(title: sections[indexPath.section].title)
         return header
     }

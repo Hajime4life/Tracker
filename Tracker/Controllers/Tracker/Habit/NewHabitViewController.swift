@@ -24,7 +24,6 @@ final class NewHabitViewController: DefaultController {
         if orderedSelectedDays.count == 7 {
             return "Каждый день"
         } else {
-            //print("я решил что их не 7, ведь их = \(orderedSelectedDays.count)")
             return orderedSelectedDays.map { $0.shortName }.joined(separator: ", ")
         }
     }

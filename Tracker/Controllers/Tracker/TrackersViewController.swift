@@ -3,7 +3,6 @@ import YandexMobileMetrica
 
 final class TrackersViewController: DefaultController {
     // MARK: - Private Props
-    private var helper: TrackerCollectionServices?
     private let store = TrackerStore()
     private let categoryStore = TrackerCategoryStore()
     private let recordStore = TrackerRecordStore()
@@ -128,10 +127,14 @@ final class TrackersViewController: DefaultController {
         updateCompletedTrackers()
     }
     
+    
+
+    
+    
     // MARK: - Private Methods
     private func reloadCollection() {
         let data = isSearching ? filteredCategories : categories
-        helper?.updateCategories(with: data)
+        service?.updateCategories(with: data)
         updatePlaceholderVisibility(using: data)
     }
     
@@ -150,13 +153,65 @@ final class TrackersViewController: DefaultController {
         filterButton.setTitleColor(isFilterActive ? .ypRed : .white, for: .normal)
     }
     
+//    private func loadCategories() {
+//        let fetched = categoryStore.fetchedCategories
+//        categories = fetched
+//        print("[TS-DEBUG] Loaded categories: \(categories.map { ($0.title, $0.trackers.count) })")
+//        refreshUI()
+//        let weekday = WeekDay.selectedWeek(date: currentDate)
+//        filtersTrackers(for: weekday)
+//    }
+    
+    
     private func loadCategories() {
-        let fetched = categoryStore.fetchedCategories
-        categories = fetched
-        print("[TS-DEBUG] Loaded categories: \(categories.map { ($0.title, $0.trackers.count) })")
-        refreshUI()
         let weekday = WeekDay.selectedWeek(date: currentDate)
-        filtersTrackers(for: weekday)
+        var allTrackers = store.trackers.filter { $0.scheduleTrackers.contains(weekday) }
+        
+        if currentFilter != .all {
+            switch currentFilter {
+                case .completed:
+                    allTrackers = allTrackers.filter { tracker in
+                        completedTrackers.contains {
+                            $0.trackerId == tracker.idTrackers &&
+                            Calendar.current.isDate($0.date, inSameDayAs: currentDate)
+                        }
+                    }
+                case .uncompleted:
+                    allTrackers = allTrackers.filter { tracker in
+                        !completedTrackers.contains {
+                            $0.trackerId == tracker.idTrackers &&
+                            Calendar.current.isDate($0.date, inSameDayAs: currentDate)
+                        }
+                    }
+                case .all, .today:
+                    break
+            }
+        }
+        
+        let pinned = allTrackers.filter(\.isPinned)
+        let normal = allTrackers.filter { !$0.isPinned }
+        
+        var result: [TrackerCategory] = []
+        
+        if !pinned.isEmpty {
+            result.append(.init(title: DefaultController.Pinned.isPinned.text, trackers: pinned))
+        }
+        
+        let fetched = categoryStore.fetchedCategories
+            .filter { !$0.trackers.isEmpty }
+        for category in fetched {
+            let filtered = category.trackers
+                .filter { tracker in
+                    normal.contains(where: { $0.idTrackers == tracker.idTrackers })
+                }
+            if !filtered.isEmpty {
+                result.append(.init(title: category.title, trackers: filtered))
+            }
+        }
+        
+        categories = result
+        service?.updateCategories(with: categories)
+        updatePlaceholderVisibility(using: categories)
     }
     
     private func applyFilter(_ filter: TrackerFilter) {
@@ -233,27 +288,19 @@ final class TrackersViewController: DefaultController {
         let picked = Calendar.current.startOfDay(for: date)
         let today = Calendar.current.startOfDay(for: Date())
         
-        guard picked <= today else {
-            print("[TS-DEBUG] Нельзя отметить трекер для будущей даты: \(date)")
-            return
-        }
+        guard picked <= today else { return }
         
         do {
-            guard let trackerCD = store.fetchTrackerCoreData(by: trackerId) else {
-                print("[x] Трекер не найден для ID: \(trackerId)")
-                return
-            }
+            guard let trackerCD = store.fetchTrackerCoreData(by: trackerId) else { return }
             
             if let recordCD = recordStore.fetchRecordCoreData(trackerId: trackerId, on: picked) {
                 try recordStore.deleteRecord(recordCD)
-                print("[.] Удалили запись выполнения")
             } else {
                 let record = TrackerRecord(id: UUID(), trackerId: trackerId, date: picked)
                 try recordStore.addNewTrackerRecordCoreData(record, for: trackerCD)
-                print("[.] Добавили запись выполнения")
             }
         } catch {
-            print("[x] Ошибка при обновлении отметки: \(error)")
+            assertionFailure("[x] Ошибка при обновлении отметки: \(error)")
         }
     }
     
@@ -301,7 +348,7 @@ final class TrackersViewController: DefaultController {
         
         let filtered = filterService.filtersTrackers(from: categories, for: weekDay)
         
-        helper?.updateCategories(with: filtered)
+        service?.updateCategories(with: filtered)
         updatePlaceholderVisibility(using: filtered)
     }
     
@@ -309,6 +356,10 @@ final class TrackersViewController: DefaultController {
     private func refreshUI() {
         setupHelper()
         updatePlaceholderVisibility()
+    }
+    func updateCategories(_ newCategories: [TrackerCategory]) {
+        categories = newCategories
+        refreshUI()
     }
     
     private func updateCompletedTrackers() {
@@ -398,9 +449,8 @@ extension TrackersViewController: NewHabitViewControllerDelegate {
             try store.addNewTracker(tracker, categoryTitle: categoryTitle)
             newTrackers.append(tracker)
             loadCategories()
-            print("[TS-DEBUG] Добавлен трекер с ID: \(tracker.idTrackers), имя: \(tracker.nameTrackers)")
         } catch {
-            print("[TS-DEBUG] Ошибка при сохранении трекера: \(error)")
+            print("[x] Ошибка при сохранении трекера: \(error)")
         }
     }
 }
@@ -525,7 +575,7 @@ extension TrackersViewController: TrackerCreationViewControllerDelegate {
             categories.append(newCat)
         }
         newTrackers.append(tracker)
-        helper?.updateCategories(with: categories)
+        service?.updateCategories(with: categories)
         updatePlaceholderVisibility()
     }
     

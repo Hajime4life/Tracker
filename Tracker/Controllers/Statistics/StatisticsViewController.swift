@@ -36,7 +36,7 @@ final class StatisticsViewController: DefaultController {
     private lazy var placeholderView: PlaceholderView = {
         let view = PlaceholderView()
         view.configure(
-            image: UIImage(named: DefaultController.ImageNames.placeholderStatistik.imageName),
+            image: UIImage(named: DefaultController.ImageNames.placeholderStatistic.imageName),
             text: DefaultController.TitleStatistic.titlePlaceholder.text
         )
         view.isHidden = true

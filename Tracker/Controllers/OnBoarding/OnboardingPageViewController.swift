@@ -30,7 +30,7 @@ final class OnboardingPageViewController: UIViewController {
         return labelBoarding
     }()
     
-    private lazy var boardingButton = DefaultButton(title: ButtonTypes.onBoarding,
+    private lazy var boardingButton = DefaultButton(title: .onBoarding,
                                                  target: self,
                                                  action: #selector(didTapBoardingButton))
     

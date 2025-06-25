@@ -95,7 +95,7 @@ class DefaultController: UIViewController {
     
     enum ImageNames: String {
         case dizzy = "dizzy"
-        case placeholderStatistik = "placeholderStatistik"
+        case placeholderStatistic = "placeholderStatistic"
         case filter = "resultErrors"
         case pinIndicator = "pinSquare"
         

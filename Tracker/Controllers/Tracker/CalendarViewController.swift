@@ -2,28 +2,8 @@ import UIKit
 
 final class CalendarViewController: UIViewController {
     
-    // MARK: - Public Props
-    var onDatePicked: ((Date) -> Void)?
-    
-    // MARK: - Private Props
-    private lazy var calendarPicker: UIDatePicker = {
-        let picker = UIDatePicker()
-        picker.datePickerMode = .date
-
-        picker.locale = Locale(identifier: "ru_RU")
-        picker.translatesAutoresizingMaskIntoConstraints = false
-        
-        if #available(iOS 14.0, *) {
-            picker.preferredDatePickerStyle = .inline
-        } else if #available(iOS 13.4, *) {
-            picker.preferredDatePickerStyle = .compact
-        }
-        
-        picker.addTarget(self, action: #selector(onDateChanged(_:)), for: .valueChanged)
-        return picker
-    }()
-    
-    private let contentView: UIView = {
+    // MARK: Private variables
+    private let containerView: UIView = {
         let view = UIView()
         view.backgroundColor = .systemBackground
         view.layer.cornerRadius = 13
@@ -35,54 +15,82 @@ final class CalendarViewController: UIViewController {
         return view
     }()
     
-    var onSelect: ((Date) -> Void)?
+    private lazy var calendarPicker: UIDatePicker = {
+        let picker = UIDatePicker()
+        picker.datePickerMode = .date
+        
+        if #available(iOS 14.0, *) {
+            picker.preferredDatePickerStyle = .inline
+        } else if #available(iOS 13.4, *) {
+            picker.preferredDatePickerStyle = .compact
+        }
+        
+        picker.locale = Locale.autoupdatingCurrent
+        picker.calendar = Calendar.autoupdatingCurrent
+        picker.timeZone = TimeZone.autoupdatingCurrent
+        picker.translatesAutoresizingMaskIntoConstraints = false
+        
+        picker.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
+        
+        return picker
+    }()
     
+    var onDatePicked: ((Date) -> Void)?
     
-    //MARK: - Overrides
-    
+    // MARK: Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(onZoneTapped))
+        setupLayout()
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(backgroundTapped))
         tapGesture.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGesture)
-                
-        setupLayout()
+        
+        let doubleTap = UITapGestureRecognizer(target: self, action: #selector(handleDateSelection))
+        doubleTap.numberOfTapsRequired = 2
+        calendarPicker.addGestureRecognizer(doubleTap)
     }
     
-    //MARK: - Private Methods
-    
+    // MARK: Private Methods
     private func setupLayout() {
-        view.addSubview(contentView)
-        contentView.addSubview(calendarPicker)
+        view.addSubview(containerView)
+        containerView.addSubview(calendarPicker)
+        
+        let calendarHeight: CGFloat = 330
         
         NSLayoutConstraint.activate([
-            contentView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            contentView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -40),
-            contentView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            contentView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            contentView.heightAnchor.constraint(equalToConstant: 362),
+            containerView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            containerView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -40),
+            containerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            containerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            containerView.heightAnchor.constraint(equalToConstant: calendarHeight + 32),
             
-            calendarPicker.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
-            calendarPicker.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            calendarPicker.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            calendarPicker.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16)
+            calendarPicker.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 16),
+            calendarPicker.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16),
+            calendarPicker.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -16),
+            calendarPicker.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -16)
         ])
     }
     
-    // MARK: - Actions
-    
-    @objc private func onZoneTapped(_ gesture: UITapGestureRecognizer) {
-        let touchLocation = gesture.location(in: view)
-        guard !contentView.frame.contains(touchLocation) else {
-            onSelect?(calendarPicker.date)
+    // MARK: - Action
+    @objc private func backgroundTapped(_ gesture: UITapGestureRecognizer) {
+        let location = gesture.location(in: view)
+        if !containerView.frame.contains(location) {
             dismiss(animated: true)
-            return
         }
     }
     
-    @objc private func onDateChanged(_ sender: UIDatePicker) {
-        let picked = sender.date
-        onSelect?(picked)
+    @objc private func datePickerValueChanged(_ sender: UIDatePicker) {
+        if #unavailable(iOS 14.0) {
+            let picked = sender.date
+            onDatePicked?(picked)
+            dismiss(animated: true)
+        }
+    }
+    
+    @objc private func handleDateSelection() {
+        let picked = calendarPicker.date
+        onDatePicked?(picked)
         dismiss(animated: true)
     }
 }
+
