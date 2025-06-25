@@ -23,7 +23,7 @@ final class DropdownButton: HighlightableButton {
     // MARK: - Init's
     
     init(
-        title: ButtonTypes,
+        title: DefaultController.TitleButtons,
         font: UIFont = .systemFont(ofSize: 17, weight: .regular),
         titleColor: UIColor = .ypBlack,
         backgroundColor: UIColor = .ypBackGray,

@@ -12,6 +12,7 @@ final class TrackersViewController: DefaultController {
     let params = GeometricParams(cellCount: 2, cellSpacing: 10, leftInset: 16,
                                  rightInset: 16, topInset: 12, bottomInset: 16)
     private lazy var alertPresenter: AlertPresenterProtocol = AlertPresenter(viewController: self)
+    
     private lazy var filterButton = DefaultButton(title: .filters,
                                                backgroundColor: .ypBlue,
                                                titleColor: .white,
