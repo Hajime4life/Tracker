@@ -197,9 +197,8 @@ class DefaultController: UIViewController {
     
     
     // MARK: - Overrides
-    override func viewDidLoad() {
+    override func viewDidLoad(){
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
         configureViewController()
     }
     
@@ -221,18 +220,7 @@ class DefaultController: UIViewController {
         navigationItem.titleView = label
     }
     
-    func presentPageSheet(
-        viewController: UIViewController,
-        animated: Bool = true,
-        transitionStyle: UIModalTransitionStyle = .coverVertical
-    ) {
-        let nav = UINavigationController(rootViewController: viewController)
-        nav.modalPresentationStyle = .pageSheet
-        nav.modalTransitionStyle = transitionStyle
-        present(nav, animated: animated)
-    }
-    
-    func dismissToRootModal(animated: Bool = true, completion: (() -> Void)? = nil) {
+    final func dismissToRootModal(animated: Bool = true, completion: (() -> Void)? = nil) {
         var rootVC = presentingViewController
         while let parent = rootVC?.presentingViewController {
             rootVC = parent

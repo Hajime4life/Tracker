@@ -43,15 +43,15 @@ final class TrackerTypeViewController: DefaultController {
     }
     
     // MARK: - Actions
-    @objc private func tapHabitButton() {
+    @objc private func tapHabitButton(){
         let newVC = NewTrackerViewController(mode: .habit)
-        newVC.delegate = habitDelegate as? TrackerCreationViewControllerDelegate
+        newVC.delegate = habitDelegate
         presentPageSheet(viewController: newVC)
     }
     
-    @objc private func tapEventsButton() {
+    @objc private func tapEventsButton(){
         let newVC = NewTrackerViewController(mode: .event)
-        newVC.delegate = habitDelegate as? TrackerCreationViewControllerDelegate
+        newVC.delegate = habitDelegate
         presentPageSheet(viewController: newVC)
     }
 }
